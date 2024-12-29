@@ -131,42 +131,199 @@ namespace esphome {
 
       ShysM5Dial() : Component() {}
 
-      void setScreenOffTime(int value) {
+      void setScreenOffTime(int value){
         ESP_LOGI("DEVICE", "setScreenOffTime %i", value);
         this->timeToScreenOff = value;
         m5DialDisplay->setTimeToScreenOff(value);
       }
 
-      void setLongPressDuration(int value) {
+      void setLongPressDuration(int value){
         ESP_LOGI("DEVICE", "setLongPressDuration %i", value);
         this->longPressMs = value;
         m5DialRotary->setLongPressDuration(value);
       }
 
-      void setApiSendDelay(int delayInMs) {
-        ESP_LOGI("DEVICE", "setApiSendDelay %i", delayInMs);
-        this->apiSendDelay = delayInMs;
+      void setApiSendDelay(int delayInMs){
+          ESP_LOGI("DEVICE", "setApiSendDelay %i", delayInMs);
+          this->apiSendDelay = delayInMs;
+      }
+      
+      void setApiSendLock(int delayInMs){
+          ESP_LOGI("DEVICE", "setApiSendLock %i", delayInMs);
+          this->apiSendLock = delayInMs;
       }
 
-      void setApiSendLock(int delayInMs) {
-        ESP_LOGI("DEVICE", "setApiSendLock %i", delayInMs);
-        this->apiSendLock = delayInMs;
-      }
-
-      void setRotaryStepWidth(int value) {
+      void setRotaryStepWidth(int value){
         ESP_LOGI("DEVICE", "setRotaryStepWidth %i", value);
         this->rotaryStepWidth = value;
       }
 
-      void setFontName(std::string value) {
+      void setFontName(std::string value){
         ESP_LOGI("DEVICE", "setFontName %s", value);
         m5DialDisplay->setFontName(value);
       }
 
-      void setFontFactor(int value) {
+      void setFontFactor(int value){
         ESP_LOGI("DEVICE", "setFontFactor %i", value);
         m5DialDisplay->setFontFactor(value);
       }
+
+
+     /**
+      * 
+      */
+      void addLight(const std::string& entity_id, const std::string& name, const std::string& modes){
+        HaDeviceLight* light = new HaDeviceLight(entity_id, name, modes);
+        addDevice(light);
+      }
+
+
+     /**
+      * 
+      */
+      void addClimate(const std::string& entity_id, const std::string& name, const std::string& modes){
+        HaDeviceClimate* climate = new HaDeviceClimate(entity_id, name, modes);
+        addDevice(climate);
+      }
+
+
+     /**
+      * 
+      */
+      void addCover(const std::string& entity_id, const std::string& name, const std::string& modes){
+        HaDeviceCover* climate = new HaDeviceCover(entity_id, name, modes);
+        addDevice(climate);
+      }
+
+
+     /**
+      * 
+      */
+      void addSwitch(const std::string& entity_id, const std::string& name, const std::string& modes){
+        HaDeviceSwitch* switchDevice = new HaDeviceSwitch(entity_id, name, modes);
+        addDevice(switchDevice);
+      }
+
+
+     /**
+      * 
+      */
+      void addFan(const std::string& entity_id, const std::string& name, const std::string& modes){
+        HaDeviceFan* fan = new HaDeviceFan(entity_id, name, modes);
+        addDevice(fan);
+      }
+
+
+     /**
+      * 
+      */
+      void addMediaPlayer(const std::string& entity_id, const std::string& name, const std::string& modes){
+        HaDeviceMediaPlayer* mediaPlayer = new HaDeviceMediaPlayer(entity_id, name, modes);
+        addDevice(mediaPlayer);
+      }
+
+
+      void addLock(const std::string& entity_id, const std::string& name, const std::string& modes){
+        HaDeviceLock* lock = new HaDeviceLock(entity_id, name, modes);
+        addDevice(lock);
+      }
+
+
+     /**
+      * 
+      */
+      void initDevice(){
+        using std::placeholders::_1;
+        using std::placeholders::_2;
+
+        ESP_LOGI("DEVICE", "Initialisierung...");
+
+        auto cfg = M5.config();
+        M5Dial.begin(cfg, enableEncoder, enableRFID);
+
+        ESP_LOGI("DEVICE", "Register Callbacks...");
+        m5DialRotary->on_rotary_left(std::bind(&esphome::shys_m5_dial::ShysM5Dial::turnRotaryLeft, this));
+        m5DialRotary->on_rotary_right(std::bind(&esphome::shys_m5_dial::ShysM5Dial::turnRotaryRight, this));
+        m5DialRotary->on_short_button_press(std::bind(&esphome::shys_m5_dial::ShysM5Dial::shortButtonPress, this));
+        m5DialRotary->on_long_button_press(std::bind(&esphome::shys_m5_dial::ShysM5Dial::longButtonPress, this));
+
+        m5DialTouch->on_touch(std::bind(&esphome::shys_m5_dial::ShysM5Dial::touchInput, this, _1, _2));
+        m5DialTouch->on_swipe(std::bind(&esphome::shys_m5_dial::ShysM5Dial::touchSwipe, this, _1));
+
+        this->registerServices();
+      }
+
+
+     /**
+      * 
+      */
+      void doLoop(){
+        if(api::global_api_server->is_connected()){
+          m5DialRotary->handleRotary();
+
+          if (m5DialRotary->handleButtonPress()){
+            m5DialDisplay->resetLastEventTimer();
+          }
+
+          m5DialTouch->handleTouch();
+          m5DialDisplay->validateTimeout();
+
+          devices[currentDevice]->updateHomeAssistantValue();
+
+          devices[currentDevice]->onLoop();
+
+          this->refreshDisplay(false);
+          lastLoop = 1;
+
+        } else if(network::is_connected()){
+          if(lastLoop != 2){
+            ESP_LOGD("HA_API", "API is not connected");
+          }
+          m5DialDisplay->showDisconnected();
+          esphome::delay(10);
+          lastLoop = 2;
+
+        } else {
+          if(lastLoop != 3){
+            ESP_LOGD("wifi", "Network is not connected");
+          }
+          m5DialDisplay->showOffline();
+          esphome::delay(10);
+          lastLoop = 3;          
+        }
+      }
+
+
+     /**
+      * 
+      */
+      void registerServices(){
+        register_service(&ShysM5Dial::selectDevice, "selectDevice", {"entity_id"});
+      }
+
+     /**
+      * 
+      */
+      void selectDevice(std::string entityId){
+        bool found = false;
+
+        for(int i=0; i<deviceAnzahl; i++){
+          HaDevice *device = devices[i];
+          if( strcmp(device->getEntityId().c_str(), entityId.c_str()) == 0 ){
+            this->currentDevice = i;
+            this->m5DialDisplay->resetLastEventTimer();
+
+            found = true;
+            ESP_LOGI("SERVICE", "Entity %s selected", entityId.c_str());
+            return;
+          } 
+        }
+        ESP_LOGW("SERVICE", "Entity-ID %s not found", entityId.c_str());
+      }
+
+     /**
+      * 
+      */
 
       void turnRotaryLeft() {
         m5DialDisplay->resetLastEventTimer();
