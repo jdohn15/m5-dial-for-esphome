@@ -47,8 +47,13 @@ public:
                            circle_center_y - circle_size / 2, circle_size, circle_size);
 
         // Add text inside or near the circle using a compatible text-drawing function
-        display.drawText("Navigation", circle_center_x - 40, circle_center_y - 10);
-        display.drawText("Mode", circle_center_x - 20, circle_center_y + 10);
+        display.setCursor(circle_center_x - 40, circle_center_y - 10); // Adjust position
+        display.setTextSize(2);  // Font size
+        display.setTextColor(TFT_WHITE, TFT_BLACK); // Text and background color
+        display.print("Navigation");
+
+        display.setCursor(circle_center_x - 20, circle_center_y + 10); // Adjust position
+        display.print("Mode");
     }
 
     bool is_navigation_mode() const { return is_navigation_mode_; }
