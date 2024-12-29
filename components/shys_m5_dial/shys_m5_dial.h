@@ -338,7 +338,7 @@ void refreshDisplay(bool forceRefresh) {
         M5Dial.Speaker.tone(5000, 20);
 
         if (navigation_mode_.is_navigation_mode()) {
-          navigation_mode_.handle_rotary_knob(ROTARY_LEFT);
+          navigation_mode_.handle_rotary_knob(*m5DialDisplay, ROTARY_LEFT);
         } else if (m5DialDisplay->isDisplayOn()) {
           devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_LEFT);
         }
@@ -351,7 +351,7 @@ void refreshDisplay(bool forceRefresh) {
         M5Dial.Speaker.tone(5000, 20);
 
         if (navigation_mode_.is_navigation_mode()) {
-          navigation_mode_.handle_rotary_knob(ROTARY_RIGHT);
+          navigation_mode_.handle_rotary_knob(*m5DialDisplay, ROTARY_RIGHT);
         } else if (m5DialDisplay->isDisplayOn()) {
           devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_RIGHT);
         }
