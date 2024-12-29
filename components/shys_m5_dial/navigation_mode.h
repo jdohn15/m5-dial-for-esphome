@@ -54,17 +54,17 @@ public:
         }
     }
 
+    void update_display_for_selection() {
+        // Add logic to highlight the selected component on the display
+        ESP_LOGI("NAVIGATION_MODE", "Highlighting component index: %d", selected_component_index_);
+    }
+
     bool is_navigation_mode() const { return is_navigation_mode_; }
 
 private:
     bool is_navigation_mode_ = false;
     int selected_component_index_ = 0;
     int max_components_;
-
-    void update_display_for_selection() {
-        // Add logic to highlight the selected component on the display
-        ESP_LOGI("NAVIGATION_MODE", "Highlighting component index: %d", selected_component_index_);
-    }
 
     void select_component(int index) {
         // Add logic to handle component selection
