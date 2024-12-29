@@ -38,22 +38,24 @@ public:
     }
 
     void update_display_for_selection(M5DialDisplay &display) {
-        const int circle_center_x = 160;  // Adjust for your display resolution
-        const int circle_center_y = 120;  // Adjust for your display resolution
-        const int circle_size = 8;        // Size of the bitmap (width and height in pixels)
+        // Access the LovyanGFX instance from M5DialDisplay
+        LovyanGFX* gfx = display.getGfx();
 
-        // Draw the circle bitmap using the correct drawBitmap function
-        display.drawBitmap(circle_bitmap, circle_size, circle_center_x - circle_size / 2,
-                           circle_center_y - circle_size / 2, circle_size, circle_size);
+        // Screen dimensions
+        const int circle_center_x = gfx->width() / 2;
+        const int circle_center_y = gfx->height() / 2;
+        const int circle_radius = 50;
 
-       
-        // Render "Navigation Mode" text using LovyanGFX
-        LovyanGFX* gfx = display.getGfx(); // Access the underlying LovyanGFX instance
+        // Clear the display
+        gfx->fillScreen(TFT_BLACK);
+
+        // Draw a white circle
+        gfx->drawCircle(circle_center_x, circle_center_y, circle_radius, TFT_WHITE);
+
+        // Add "Navigation Mode" text
         gfx->setTextColor(TFT_WHITE);      // Set text color
         gfx->setTextSize(2);               // Set text size
         gfx->setTextDatum(textdatum_t::middle_center); // Center text alignment
-
-        // Draw text
         gfx->drawString("Navigation", circle_center_x, circle_center_y - 10);
         gfx->drawString("Mode", circle_center_x, circle_center_y + 10);
     }
@@ -63,21 +65,6 @@ public:
 private:
     bool is_navigation_mode_ = false;
     int max_components_;
-
-    // Define the bitmap as a static constant
-    static const uint8_t circle_bitmap[8];
-};
-
-// Define the bitmap outside the class
-const uint8_t NavigationMode::circle_bitmap[8] = {
-    0b00111100,
-    0b01111110,
-    0b11111111,
-    0b11111111,
-    0b11111111,
-    0b11111111,
-    0b01111110,
-    0b00111100
 };
 
 } // namespace shys_m5_dial
