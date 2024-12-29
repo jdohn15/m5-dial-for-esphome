@@ -87,7 +87,7 @@ namespace esphome {
 
           // If in navigation mode, update the navigation overlay display
           if (navigation_mode_.is_navigation_mode()) {
-              navigation_mode_.update_display_for_selection(*m5DialDisplay);
+              navigation_mode_.update_display_for_selection(*m5DialDisplay, currentDevice, devices);
           }
       }
 
