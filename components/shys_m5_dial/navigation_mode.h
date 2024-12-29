@@ -36,29 +36,17 @@ public:
             }
         }
     }
-    
-    const uint8_t circle_bitmap[] = {
-        0b00111100,
-        0b01111110,
-        0b11111111,
-        0b11111111,
-        0b11111111,
-        0b11111111,
-        0b01111110,
-        0b00111100
-    };
 
     void update_display_for_selection(M5DialDisplay &display) {
         const int circle_center_x = 160;  // Adjust for your display resolution
         const int circle_center_y = 120;  // Adjust for your display resolution
-        const int circle_radius = 50;
+        const int circle_size = 8;        // Size of the bitmap (width and height in pixels)
 
-
-    // Draw the circle bitmap
+        // Draw the circle bitmap
         display.drawBitmap(circle_center_x - circle_size / 2, circle_center_y - circle_size / 2,
-                       circle_bitmap, circle_size, circle_size, true);
+                           circle_bitmap, circle_size, circle_size, true);
 
-    // Add text inside the circle
+        // Add text inside the circle
         display.print("Navigation", circle_center_x - 40, circle_center_y - 10);
         display.print("Mode", circle_center_x - 20, circle_center_y + 10);
     }
@@ -68,6 +56,21 @@ public:
 private:
     bool is_navigation_mode_ = false;
     int max_components_;
+
+    // Define the bitmap as a static constant
+    static const uint8_t circle_bitmap[8];
+};
+
+// Define the bitmap outside the class
+const uint8_t NavigationMode::circle_bitmap[8] = {
+    0b00111100,
+    0b01111110,
+    0b11111111,
+    0b11111111,
+    0b11111111,
+    0b11111111,
+    0b01111110,
+    0b00111100
 };
 
 } // namespace shys_m5_dial
