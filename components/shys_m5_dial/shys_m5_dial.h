@@ -328,7 +328,7 @@ namespace esphome {
       */
       void turnRotaryLeft(){
           unsigned long now = esphome::millis();
-          if (now - lastRotaryEvent < 100) { // Debounce time of 200ms
+          if (now - lastRotaryEvent < 12) { // Debounce time of 200ms
               return;
           }
 
@@ -350,7 +350,7 @@ namespace esphome {
       */
       void turnRotaryRight() {
           unsigned long now = esphome::millis();
-          if (now - lastRotaryEvent < 100) { // Debounce time of 200ms
+          if (now - lastRotaryEvent < 12) { // Debounce time of 200ms
               return;
           }
 
