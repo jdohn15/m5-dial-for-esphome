@@ -21,7 +21,7 @@ public:
         ESP_LOGI("NAVIGATION_MODE", "Exited navigation mode");
     }
 
-    void handle_rotary_knob(const char* direction, int& currentDevice, M5DialDisplay& display, HaDevice** devices) {
+    void handle_rotary_knob(const char* direction, int& currentDevice) {
         bool forceRefresh = false;
 
         if (is_navigation_mode_) {
