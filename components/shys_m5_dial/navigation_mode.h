@@ -42,13 +42,13 @@ public:
         const int circle_center_y = 120;  // Adjust for your display resolution
         const int circle_size = 8;        // Size of the bitmap (width and height in pixels)
 
-        // Draw the circle bitmap
-        display.drawBitmap(circle_center_x - circle_size / 2, circle_center_y - circle_size / 2,
-                           circle_bitmap, circle_size, circle_size, true);
+        // Draw the circle bitmap using the correct `drawBitmap` function
+        display.drawBitmap(circle_bitmap, circle_size, circle_center_x - circle_size / 2,
+                           circle_center_y - circle_size / 2, circle_size, circle_size);
 
-        // Add text inside the circle
-        display.print("Navigation", circle_center_x - 40, circle_center_y - 10);
-        display.print("Mode", circle_center_x - 20, circle_center_y + 10);
+        // Add text inside or near the circle using a compatible text-drawing function
+        display.drawText("Navigation", circle_center_x - 40, circle_center_y - 10);
+        display.drawText("Mode", circle_center_x - 20, circle_center_y + 10);
     }
 
     bool is_navigation_mode() const { return is_navigation_mode_; }
