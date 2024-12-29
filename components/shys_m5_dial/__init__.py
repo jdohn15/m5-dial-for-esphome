@@ -77,7 +77,7 @@ CONF_DEVICE_LOCK_OPEN_ON_BUTTON       = "open_on_button"
 # DEFAULTS
 DEFAULT_NAME                           = "M5 Stack Dial"
 DEFAULT_SCREEN_OFF_TIME                = 30000
-DEFAULT_LONG_PRESS_DURATION            = 1200
+DEFAULT_LONG_PRESS_DURATION            = 400
 DEFAULT_SEND_VALUE_DELAY               = 1200
 DEFAULT_SEND_VALUE_LOCK                = 3000
 DEFAULT_ROTARY_STEP_WIDTH              = 10
