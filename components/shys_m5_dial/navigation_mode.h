@@ -34,7 +34,6 @@ public:
                     currentDevice = 0; // Wrap around
                 }
             }
-            ESP_LOGI("NAVIGATION_MODE", "Selected device index: %d", currentDevice);
         }
     }
 
