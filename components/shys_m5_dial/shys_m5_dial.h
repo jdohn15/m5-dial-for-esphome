@@ -323,49 +323,24 @@ namespace esphome {
         ESP_LOGW("SERVICE", "Entity-ID %s not found", entityId.c_str());
       }
 
-     /**
-      * 
-      */
-      void turnRotaryLeft(){
-          unsigned long now = esphome::millis();
-          if (now - lastRotaryEvent < 12) { // Debounce time of 200ms
-              return;
-          }
-
+      void turnRotaryLeft() {
           m5DialDisplay->resetLastEventTimer();
-          M5Dial.Speaker.tone(5000, 20);
-
           if (navigation_mode_.is_navigation_mode()) {
-              navigation_mode_.handle_rotary_knob(ROTARY_LEFT, currentDevice);
-              refreshDisplay(true); // Force refresh to reflect the change
-          } else if (m5DialDisplay->isDisplayOn()) {
+              navigation_mode_.handle_rotary_knob(ROTARY_LEFT, currentDevice, *m5DialDisplay, devices);
+          } else {
               devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_LEFT);
           }
-
-          lastRotaryEvent = now;
       }
-
-     /**
-      * 
-      */
+      
       void turnRotaryRight() {
-          unsigned long now = esphome::millis();
-          if (now - lastRotaryEvent < 12) { // Debounce time of 200ms
-              return;
-          }
-
           m5DialDisplay->resetLastEventTimer();
-          M5Dial.Speaker.tone(5000, 20);
-
           if (navigation_mode_.is_navigation_mode()) {
-              navigation_mode_.handle_rotary_knob(ROTARY_RIGHT, currentDevice);
-              refreshDisplay(true); // Force refresh to reflect the change
-          } else if (m5DialDisplay->isDisplayOn()) {
+              navigation_mode_.handle_rotary_knob(ROTARY_RIGHT, currentDevice, *m5DialDisplay, devices);
+          } else {
               devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_RIGHT);
           }
-
-          lastRotaryEvent = now;
       }
+
 
       void shortButtonPress() {
         m5DialDisplay->resetLastEventTimer();
