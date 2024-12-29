@@ -12,6 +12,7 @@
 #include "ha_device_fan.h"
 #include "ha_device_mediaplayer.h"
 #include "ha_device_lock.h"
+#include "navigation_mode.h"
 
 #include "M5Dial.h"
 
@@ -31,10 +32,14 @@ namespace esphome
 
       int apiSendDelay = 1000; // Verzögerung nach Wert-Änderung (um nicht jeden Wert beim drehen des Rades zu senden)
       int apiSendLock = 3000;  // Wartezeit zwischen einzelnden API-Aufrufen
-
+      
+      NavigationMode navigation_mode_{MAX_DEVICE_COUNT};
       // -------------------------------
 
       HaDevice* devices[MAX_DEVICE_COUNT];
+
+
+
       int deviceAnzahl = 0;
 
       int currentDevice = 0;
@@ -76,15 +81,19 @@ namespace esphome
         return false;
       }
 
-      void refreshDisplay(bool forceRefresh){
-        if(forceRefresh || isDisplayRefreshNeeded()){
-            devices[currentDevice]->refreshDisplay(*m5DialDisplay, lastDisplayDevice != currentDevice);
+    void refreshDisplay(bool forceRefresh) {
+        if (forceRefresh || isDisplayRefreshNeeded()) {
+            if (navigation_mode_.is_navigation_mode()) {
+                navigation_mode_.update_display_for_selection();
+            } else {
+                devices[currentDevice]->refreshDisplay(*m5DialDisplay, lastDisplayDevice != currentDevice);
+            }
 
-            lastDisplayDevice  = currentDevice;
-            lastModeIndex      = devices[currentDevice]->getCurrentModeIndex();
-            lastDisplayValue   = getCurrentValue();
+            lastDisplayDevice = currentDevice;
+            lastModeIndex = devices[currentDevice]->getCurrentModeIndex();
+            lastDisplayValue = getCurrentValue();
         }
-      }
+    }
 
       void nextDevice(){
         if(currentDevice >= deviceAnzahl-1){
@@ -332,8 +341,10 @@ namespace esphome
         m5DialDisplay->resetLastEventTimer();
         M5Dial.Speaker.tone(5000, 20);
 
-        if(m5DialDisplay->isDisplayOn()){
-          devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_LEFT);
+        if (navigation_mode_.is_navigation_mode()) {
+            navigation_mode_.handle_rotary_knob(ROTARY_LEFT);
+        } else if (m5DialDisplay->isDisplayOn()) {
+            devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_LEFT);
         }
 
         lastRotaryEvent = esphome::millis();
@@ -346,9 +357,12 @@ namespace esphome
         m5DialDisplay->resetLastEventTimer();
         M5Dial.Speaker.tone(5000, 20);
 
-        if(m5DialDisplay->isDisplayOn()){
-          devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_RIGHT);
+        if (navigation_mode_.is_navigation_mode()) {
+            navigation_mode_.handle_rotary_knob(ROTARY_RIGHT);
+        } else if (m5DialDisplay->isDisplayOn()) {
+            devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_RIGHT);
         }
+
 
         lastRotaryEvent = esphome::millis();
       }
@@ -359,8 +373,10 @@ namespace esphome
       void shortButtonPress(){
         m5DialDisplay->resetLastEventTimer();
         M5Dial.Speaker.tone(4000, 20);
-        if(m5DialDisplay->isDisplayOn()){
-          devices[currentDevice]->onButton(*m5DialDisplay, BUTTON_SHORT);
+        if (navigation_mode_.is_navigation_mode()) {
+            navigation_mode_.handle_button_press(BUTTON_SHORT);
+        } else if (m5DialDisplay->isDisplayOn()) {
+            devices[currentDevice]->onButton(*m5DialDisplay, BUTTON_SHORT);
         }
       }
 
@@ -368,9 +384,10 @@ namespace esphome
       * 
       */
       void longButtonPress(){
-        if(m5DialDisplay->isDisplayOn()){
-          m5DialDisplay->resetLastEventTimer();
+        if (m5DialDisplay->isDisplayOn()) {
+            m5DialDisplay->resetLastEventTimer();
         }
+        navigation_mode_.handle_button_press(BUTTON_LONG);
       }
 
      /**
