@@ -44,17 +44,19 @@ public:
         // Screen dimensions
         const int circle_center_x = gfx->width() / 2;
         const int circle_center_y = gfx->height() / 2;
-        const int circle_radius = 50;
+        const int outer_radius = 50;
+        const int line_thickness = 6; // Thickness of the circle line
+        const int inner_radius = outer_radius - line_thickness;
 
-        // Clear the display
-        gfx->fillScreen(TFT_BLACK);
+        // Draw the outer filled circle
+        gfx->fillCircle(circle_center_x, circle_center_y, outer_radius, TFT_WHITE);
 
-        // Draw a white circle
-        gfx->drawCircle(circle_center_x, circle_center_y, circle_radius, TFT_WHITE);
+        // Draw the inner circle in the background color to simulate a thicker line
+        gfx->fillCircle(circle_center_x, circle_center_y, inner_radius, TFT_BLACK);
 
         // Add "Navigation Mode" text
         gfx->setTextColor(TFT_WHITE);      // Set text color
-        gfx->setTextSize(2);               // Set text size
+        gfx->setTextSize(1);               // Set smaller text size
         gfx->setTextDatum(textdatum_t::middle_center); // Center text alignment
         gfx->drawString("Navigation", circle_center_x, circle_center_y - 10);
         gfx->drawString("Mode", circle_center_x, circle_center_y + 10);
