@@ -190,12 +190,12 @@ namespace esphome
                     resp.data.push_back(resp_kv);
 
                     resp_kv.key = "hvac_mode";
-                    resp_kv.value = mode.c_str();
+                    resp_kv.value = mode.c_str();  // Ensure mode is passed as a string
                     resp.data.push_back(resp_kv);
 
                     esphome::api::global_api_server->send_homeassistant_service_call(resp);
 
-                    ESP_LOGI("HA_API", "set HVAC mode: %s for %s", mode, entity.c_str());
+                    ESP_LOGI("HA_API", "set HVAC mode: %s for %s", mode.c_str(), entity.c_str());
                 }
 
 
