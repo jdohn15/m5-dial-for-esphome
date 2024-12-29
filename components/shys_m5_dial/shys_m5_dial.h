@@ -18,40 +18,32 @@
 
 #define MAX_DEVICE_COUNT 50
 
-namespace esphome
-{
-  namespace shys_m5_dial
-  {
-    class ShysM5Dial : public Component, public esphome::api::CustomAPIDevice
-    {
+namespace esphome {
+  namespace shys_m5_dial {
+    class ShysM5Dial : public Component, public esphome::api::CustomAPIDevice {
     protected:
       int timeToScreenOff = 30000;
       int longPressMs = 1200;
       int rotaryStepWidth = 10;
       uint16_t displayRefeshPause = 700;
 
-      int apiSendDelay = 1000; // Verzögerung nach Wert-Änderung (um nicht jeden Wert beim drehen des Rades zu senden)
-      int apiSendLock = 3000;  // Wartezeit zwischen einzelnden API-Aufrufen
-      
+      int apiSendDelay = 1000; // Delay after value change to avoid frequent updates
+      int apiSendLock = 3000;  // Lock time between API calls
+
       NavigationMode navigation_mode_{MAX_DEVICE_COUNT};
-      // -------------------------------
 
       HaDevice* devices[MAX_DEVICE_COUNT];
-
-
-
       int deviceAnzahl = 0;
-
       int currentDevice = 0;
 
       int lastDisplayDevice = -1;
       float lastDisplayValue = -1;
       int lastModeIndex = -1;
-      
+
       unsigned long lastRotaryEvent = 0;
       unsigned long lastReceiveEvent = 0;
       unsigned long lastDisplayRefresh = 0;
-      
+
       int lastLoop = 0;
 
       bool enableRFID = true;
@@ -63,62 +55,57 @@ namespace esphome
       M5DialTouch* m5DialTouch = new M5DialTouch();
       M5DialEEPROM* m5DialEEPROM = new M5DialEEPROM();
 
-      bool startsWith(const char *pre, const char *str){
-          return strncmp(pre, str, strlen(pre)) == 0;
+      bool startsWith(const char *pre, const char *str) {
+        return strncmp(pre, str, strlen(pre)) == 0;
       }
 
-      int getCurrentValue(){
+      int getCurrentValue() {
         return devices[currentDevice]->getValue();
       }
 
-      bool isDisplayRefreshNeeded(){
-        if (getCurrentValue() != lastDisplayValue || 
-              currentDevice != lastDisplayDevice ||
-              devices[currentDevice]->getCurrentModeIndex() != lastModeIndex || 
-              devices[currentDevice]->isDisplayRefreshNeeded()){
+      bool isDisplayRefreshNeeded() {
+        if (getCurrentValue() != lastDisplayValue ||
+            currentDevice != lastDisplayDevice ||
+            devices[currentDevice]->getCurrentModeIndex() != lastModeIndex ||
+            devices[currentDevice]->isDisplayRefreshNeeded()) {
           return esphome::millis() - lastDisplayRefresh > displayRefeshPause;
         }
         return false;
       }
 
-    void refreshDisplay(bool forceRefresh) {
+      void refreshDisplay(bool forceRefresh) {
         if (forceRefresh || isDisplayRefreshNeeded()) {
-            if (navigation_mode_.is_navigation_mode()) {
-                // Pass the display object to update_display_for_selection
-                navigation_mode_.update_display_for_selection(*m5DialDisplay);
-            } else {
-                // Refresh display for the current device
-                devices[currentDevice]->refreshDisplay(*m5DialDisplay, lastDisplayDevice != currentDevice);
-            }
-            lastDisplayDevice = currentDevice;
-            lastModeIndex = devices[currentDevice]->getCurrentModeIndex();
-            lastDisplayValue = getCurrentValue();
+          if (navigation_mode_.is_navigation_mode()) {
+            navigation_mode_.update_display_for_selection(*m5DialDisplay);
+          } else {
+            devices[currentDevice]->refreshDisplay(*m5DialDisplay, lastDisplayDevice != currentDevice);
+          }
+          lastDisplayDevice = currentDevice;
+          lastModeIndex = devices[currentDevice]->getCurrentModeIndex();
+          lastDisplayValue = getCurrentValue();
         }
-    }
+      }
 
-      void nextDevice(){
-        if(currentDevice >= deviceAnzahl-1){
+      void nextDevice() {
+        if (currentDevice >= deviceAnzahl - 1) {
           currentDevice = 0;
         } else {
           currentDevice++;
         }
       }
 
-      void previousDevice(){
-        if(currentDevice >= 1){
+      void previousDevice() {
+        if (currentDevice >= 1) {
           currentDevice--;
         } else {
-          currentDevice = deviceAnzahl-1;
+          currentDevice = deviceAnzahl - 1;
         }
       }
-      
-     /**
-      * 
-      */
-      void addDevice(HaDevice* device){
+
+      void addDevice(HaDevice* device) {
         if (device != nullptr) {
-          if(this->deviceAnzahl >= MAX_DEVICE_COUNT-1){
-            ESP_LOGE("DEVICE", "EXCEED DEVICE COUNT MAXIMUM: %s can not be added!", device->getName().c_str());
+          if (this->deviceAnzahl >= MAX_DEVICE_COUNT - 1) {
+            ESP_LOGE("DEVICE", "EXCEED DEVICE COUNT MAXIMUM: %s cannot be added!", device->getName().c_str());
             return;
           }
 
@@ -137,7 +124,6 @@ namespace esphome
         }
       }
 
-
     public:
       void dump_config() override;
       void setup() override;
@@ -145,291 +131,117 @@ namespace esphome
 
       ShysM5Dial() : Component() {}
 
-      void setScreenOffTime(int value){
+      void setScreenOffTime(int value) {
         ESP_LOGI("DEVICE", "setScreenOffTime %i", value);
         this->timeToScreenOff = value;
         m5DialDisplay->setTimeToScreenOff(value);
       }
 
-      void setLongPressDuration(int value){
+      void setLongPressDuration(int value) {
         ESP_LOGI("DEVICE", "setLongPressDuration %i", value);
         this->longPressMs = value;
         m5DialRotary->setLongPressDuration(value);
       }
 
-      void setApiSendDelay(int delayInMs){
-          ESP_LOGI("DEVICE", "setApiSendDelay %i", delayInMs);
-          this->apiSendDelay = delayInMs;
-      }
-      
-      void setApiSendLock(int delayInMs){
-          ESP_LOGI("DEVICE", "setApiSendLock %i", delayInMs);
-          this->apiSendLock = delayInMs;
+      void setApiSendDelay(int delayInMs) {
+        ESP_LOGI("DEVICE", "setApiSendDelay %i", delayInMs);
+        this->apiSendDelay = delayInMs;
       }
 
-      void setRotaryStepWidth(int value){
+      void setApiSendLock(int delayInMs) {
+        ESP_LOGI("DEVICE", "setApiSendLock %i", delayInMs);
+        this->apiSendLock = delayInMs;
+      }
+
+      void setRotaryStepWidth(int value) {
         ESP_LOGI("DEVICE", "setRotaryStepWidth %i", value);
         this->rotaryStepWidth = value;
       }
 
-      void setFontName(std::string value){
+      void setFontName(std::string value) {
         ESP_LOGI("DEVICE", "setFontName %s", value);
         m5DialDisplay->setFontName(value);
       }
 
-      void setFontFactor(int value){
+      void setFontFactor(int value) {
         ESP_LOGI("DEVICE", "setFontFactor %i", value);
         m5DialDisplay->setFontFactor(value);
       }
 
-
-     /**
-      * 
-      */
-      void addLight(const std::string& entity_id, const std::string& name, const std::string& modes){
-        HaDeviceLight* light = new HaDeviceLight(entity_id, name, modes);
-        addDevice(light);
-      }
-
-
-     /**
-      * 
-      */
-      void addClimate(const std::string& entity_id, const std::string& name, const std::string& modes){
-        HaDeviceClimate* climate = new HaDeviceClimate(entity_id, name, modes);
-        addDevice(climate);
-      }
-
-
-     /**
-      * 
-      */
-      void addCover(const std::string& entity_id, const std::string& name, const std::string& modes){
-        HaDeviceCover* climate = new HaDeviceCover(entity_id, name, modes);
-        addDevice(climate);
-      }
-
-
-     /**
-      * 
-      */
-      void addSwitch(const std::string& entity_id, const std::string& name, const std::string& modes){
-        HaDeviceSwitch* switchDevice = new HaDeviceSwitch(entity_id, name, modes);
-        addDevice(switchDevice);
-      }
-
-
-     /**
-      * 
-      */
-      void addFan(const std::string& entity_id, const std::string& name, const std::string& modes){
-        HaDeviceFan* fan = new HaDeviceFan(entity_id, name, modes);
-        addDevice(fan);
-      }
-
-
-     /**
-      * 
-      */
-      void addMediaPlayer(const std::string& entity_id, const std::string& name, const std::string& modes){
-        HaDeviceMediaPlayer* mediaPlayer = new HaDeviceMediaPlayer(entity_id, name, modes);
-        addDevice(mediaPlayer);
-      }
-
-
-      void addLock(const std::string& entity_id, const std::string& name, const std::string& modes){
-        HaDeviceLock* lock = new HaDeviceLock(entity_id, name, modes);
-        addDevice(lock);
-      }
-
-
-     /**
-      * 
-      */
-      void initDevice(){
-        using std::placeholders::_1;
-        using std::placeholders::_2;
-
-        ESP_LOGI("DEVICE", "Initialisierung...");
-
-        auto cfg = M5.config();
-        M5Dial.begin(cfg, enableEncoder, enableRFID);
-
-        ESP_LOGI("DEVICE", "Register Callbacks...");
-        m5DialRotary->on_rotary_left(std::bind(&esphome::shys_m5_dial::ShysM5Dial::turnRotaryLeft, this));
-        m5DialRotary->on_rotary_right(std::bind(&esphome::shys_m5_dial::ShysM5Dial::turnRotaryRight, this));
-        m5DialRotary->on_short_button_press(std::bind(&esphome::shys_m5_dial::ShysM5Dial::shortButtonPress, this));
-        m5DialRotary->on_long_button_press(std::bind(&esphome::shys_m5_dial::ShysM5Dial::longButtonPress, this));
-
-        m5DialTouch->on_touch(std::bind(&esphome::shys_m5_dial::ShysM5Dial::touchInput, this, _1, _2));
-        m5DialTouch->on_swipe(std::bind(&esphome::shys_m5_dial::ShysM5Dial::touchSwipe, this, _1));
-
-        this->registerServices();
-      }
-
-
-     /**
-      * 
-      */
-      void doLoop(){
-        if(api::global_api_server->is_connected()){
-          m5DialRotary->handleRotary();
-
-          if (m5DialRotary->handleButtonPress()){
-            m5DialDisplay->resetLastEventTimer();
-          }
-
-          m5DialTouch->handleTouch();
-          m5DialDisplay->validateTimeout();
-
-          devices[currentDevice]->updateHomeAssistantValue();
-
-          devices[currentDevice]->onLoop();
-
-          this->refreshDisplay(false);
-          lastLoop = 1;
-
-        } else if(network::is_connected()){
-          if(lastLoop != 2){
-            ESP_LOGD("HA_API", "API is not connected");
-          }
-          m5DialDisplay->showDisconnected();
-          esphome::delay(10);
-          lastLoop = 2;
-
-        } else {
-          if(lastLoop != 3){
-            ESP_LOGD("wifi", "Network is not connected");
-          }
-          m5DialDisplay->showOffline();
-          esphome::delay(10);
-          lastLoop = 3;          
-        }
-      }
-
-
-     /**
-      * 
-      */
-      void registerServices(){
-        register_service(&ShysM5Dial::selectDevice, "selectDevice", {"entity_id"});
-      }
-
-     /**
-      * 
-      */
-      void selectDevice(std::string entityId){
-        bool found = false;
-
-        for(int i=0; i<deviceAnzahl; i++){
-          HaDevice *device = devices[i];
-          if( strcmp(device->getEntityId().c_str(), entityId.c_str()) == 0 ){
-            this->currentDevice = i;
-            this->m5DialDisplay->resetLastEventTimer();
-
-            found = true;
-            ESP_LOGI("SERVICE", "Entity %s selected", entityId.c_str());
-            return;
-          } 
-        }
-        ESP_LOGW("SERVICE", "Entity-ID %s not found", entityId.c_str());
-      }
-
-     /**
-      * 
-      */
-      void turnRotaryLeft(){
+      void turnRotaryLeft() {
         m5DialDisplay->resetLastEventTimer();
         M5Dial.Speaker.tone(5000, 20);
 
         if (navigation_mode_.is_navigation_mode()) {
-            navigation_mode_.handle_rotary_knob(ROTARY_LEFT);
+          navigation_mode_.handle_rotary_knob(ROTARY_LEFT, currentDevice);
+          refreshDisplay(true);
         } else if (m5DialDisplay->isDisplayOn()) {
-            devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_LEFT);
+          devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_LEFT);
         }
 
         lastRotaryEvent = esphome::millis();
       }
 
-     /**
-      * 
-      */
-      void turnRotaryRight(){
+      void turnRotaryRight() {
         m5DialDisplay->resetLastEventTimer();
         M5Dial.Speaker.tone(5000, 20);
 
         if (navigation_mode_.is_navigation_mode()) {
-            navigation_mode_.handle_rotary_knob(ROTARY_RIGHT);
+          navigation_mode_.handle_rotary_knob(ROTARY_RIGHT, currentDevice);
+          refreshDisplay(true);
         } else if (m5DialDisplay->isDisplayOn()) {
-            devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_RIGHT);
+          devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_RIGHT);
         }
-
 
         lastRotaryEvent = esphome::millis();
       }
 
-     /**
-      * 
-      */
-      void shortButtonPress(){
+      void shortButtonPress() {
         m5DialDisplay->resetLastEventTimer();
         M5Dial.Speaker.tone(4000, 20);
+
         if (navigation_mode_.is_navigation_mode()) {
-            navigation_mode_.handle_button_press(BUTTON_SHORT);
+          navigation_mode_.handle_button_press(BUTTON_SHORT);
         } else if (m5DialDisplay->isDisplayOn()) {
-            devices[currentDevice]->onButton(*m5DialDisplay, BUTTON_SHORT);
+          devices[currentDevice]->onButton(*m5DialDisplay, BUTTON_SHORT);
         }
       }
 
-     /**
-      * 
-      */
       void longButtonPress() {
-          m5DialDisplay->resetLastEventTimer();
-
-          if (navigation_mode_.is_navigation_mode()) {
-              navigation_mode_.exit_navigation_mode();
-          } else {
-              navigation_mode_.enter_navigation_mode();
-          }
-
-    refreshDisplay(true);  // Force refresh to update the display
-}
-
-     /**
-      * 
-      */
-      void touchInput(uint16_t x, uint16_t y){
         m5DialDisplay->resetLastEventTimer();
-        if(m5DialDisplay->isDisplayOn()){
+
+        if (navigation_mode_.is_navigation_mode()) {
+          navigation_mode_.exit_navigation_mode();
+        } else {
+          navigation_mode_.enter_navigation_mode();
+        }
+
+        refreshDisplay(true);
+      }
+
+      void touchInput(uint16_t x, uint16_t y) {
+        m5DialDisplay->resetLastEventTimer();
+        if (m5DialDisplay->isDisplayOn()) {
           devices[currentDevice]->onTouch(*m5DialDisplay, x, y);
         }
       }
 
-     /**
-      * 
-      */
-      void touchSwipe(const char* direction){
-        ESP_LOGD("TOUCH", "touchSwipe direction: %s", direction);
+      void touchSwipe(const char* direction) {
         m5DialDisplay->resetLastEventTimer();
-        if(m5DialDisplay->isDisplayOn()){
-          if(! devices[currentDevice]->onSwipe(*m5DialDisplay, direction) ){
-
-            if(strcmp(direction, TOUCH_SWIPE_LEFT)==0){
+        if (!navigation_mode_.is_navigation_mode() && m5DialDisplay->isDisplayOn()) {
+          if (!devices[currentDevice]->onSwipe(*m5DialDisplay, direction)) {
+            if (strcmp(direction, TOUCH_SWIPE_LEFT) == 0) {
               this->previousDevice();
-            } else if(strcmp(direction, TOUCH_SWIPE_RIGHT)==0){
+            } else if (strcmp(direction, TOUCH_SWIPE_RIGHT) == 0) {
               this->nextDevice();
-            } else if(strcmp(direction, TOUCH_SWIPE_UP)==0){
+            } else if (strcmp(direction, TOUCH_SWIPE_UP) == 0) {
               devices[currentDevice]->previousMode();
-            } else if(strcmp(direction, TOUCH_SWIPE_DOWN)==0){
+            } else if (strcmp(direction, TOUCH_SWIPE_DOWN) == 0) {
               devices[currentDevice]->nextMode();
-            } 
-
+            }
           }
         }
       }
-
-
     };
   }
 }
