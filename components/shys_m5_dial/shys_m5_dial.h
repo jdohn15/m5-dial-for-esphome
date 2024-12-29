@@ -257,7 +257,7 @@ namespace esphome {
       * 
       */
       void doLoop(){
-        }
+        
         if(api::global_api_server->is_connected()){
           m5DialRotary->handleRotary();
 
