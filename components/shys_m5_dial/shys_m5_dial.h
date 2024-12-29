@@ -390,22 +390,27 @@ namespace esphome {
           }
       }
 
-      void touchSwipe(const char* direction) {
+      void touchSwipe(const char* direction){
+        ESP_LOGD("TOUCH", "touchSwipe direction: %s", direction);
         m5DialDisplay->resetLastEventTimer();
-        if (!navigation_mode_.is_navigation_mode() && m5DialDisplay->isDisplayOn()) {
-          if (!devices[currentDevice]->onSwipe(*m5DialDisplay, direction)) {
-            if (strcmp(direction, TOUCH_SWIPE_LEFT) == 0) {
+        if(m5DialDisplay->isDisplayOn()){
+          if(! devices[currentDevice]->onSwipe(*m5DialDisplay, direction) ){
+
+            if(strcmp(direction, TOUCH_SWIPE_LEFT)==0){
               this->previousDevice();
-            } else if (strcmp(direction, TOUCH_SWIPE_RIGHT) == 0) {
+            } else if(strcmp(direction, TOUCH_SWIPE_RIGHT)==0){
               this->nextDevice();
-            } else if (strcmp(direction, TOUCH_SWIPE_UP) == 0) {
+            } else if(strcmp(direction, TOUCH_SWIPE_UP)==0){
               devices[currentDevice]->previousMode();
-            } else if (strcmp(direction, TOUCH_SWIPE_DOWN) == 0) {
+            } else if(strcmp(direction, TOUCH_SWIPE_DOWN)==0){
               devices[currentDevice]->nextMode();
-            }
+            } 
+
           }
         }
       }
+
+
     };
   }
 }
