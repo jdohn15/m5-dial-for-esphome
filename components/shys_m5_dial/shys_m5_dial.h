@@ -63,32 +63,24 @@ namespace esphome {
         return devices[currentDevice]->getValue();
       }
 
-      bool isDisplayRefreshNeeded() {
-        if (getCurrentValue() != lastDisplayValue ||
-            currentDevice != lastDisplayDevice ||
-            devices[currentDevice]->getCurrentModeIndex() != lastModeIndex ||
-            devices[currentDevice]->isDisplayRefreshNeeded()) {
+      bool isDisplayRefreshNeeded(){
+        if (getCurrentValue() != lastDisplayValue || 
+              currentDevice != lastDisplayDevice ||
+              devices[currentDevice]->getCurrentModeIndex() != lastModeIndex || 
+              devices[currentDevice]->isDisplayRefreshNeeded()){
           return esphome::millis() - lastDisplayRefresh > displayRefeshPause;
         }
         return false;
       }
 
-void refreshDisplay(bool forceRefresh) {
-          if (forceRefresh || isDisplayRefreshNeeded()) {
-        // First, refresh the current device's display
-              devices[currentDevice]->refreshDisplay(*m5DialDisplay, lastDisplayDevice != currentDevice);
+      void refreshDisplay(bool forceRefresh){
+        if(forceRefresh || isDisplayRefreshNeeded()){
+            devices[currentDevice]->refreshDisplay(*m5DialDisplay, lastDisplayDevice != currentDevice);
 
-              // Then, if in navigation mode, draw the overlay on top
-              if (navigation_mode_.is_navigation_mode()) {
-                  navigation_mode_.update_display_for_selection(*m5DialDisplay);
-              }
-    
-              // Update tracking variables
-              lastDisplayDevice = currentDevice;
-              lastModeIndex = devices[currentDevice]->getCurrentModeIndex();
-              lastDisplayValue = getCurrentValue();
-              lastDisplayRefresh = esphome::millis();
-          }
+            lastDisplayDevice  = currentDevice;
+            lastModeIndex      = devices[currentDevice]->getCurrentModeIndex();
+            lastDisplayValue   = getCurrentValue();
+        }
       }
 
       void nextDevice() {
