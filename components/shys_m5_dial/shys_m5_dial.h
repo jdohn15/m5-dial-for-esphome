@@ -357,25 +357,17 @@ void refreshDisplay(bool forceRefresh) {
 
 
       void turnRotaryRight() {
-          unsigned long now = esphome::millis();
-          if (now - lastRotaryEvent < 10) { // Debounce time of 100ms
-              return;
-          }
-
           m5DialDisplay->resetLastEventTimer();
+          M5Dial.Speaker.tone(5000, 20);
 
           if (navigation_mode_.is_navigation_mode()) {
-              // Exclusively handle navigation mode logic
-              navigation_mode_.handle_rotary_knob(ROTARY_RIGHT, currentDevice, deviceAnzahl);
+              navigation_mode_.handle_rotary_knob(ROTARY_RIGHT, currentDevice);
               refreshDisplay(true); // Force refresh to reflect the change
-          } else if (!navigation_mode_.is_navigation_mode() && m5DialDisplay->isDisplayOn()) {
-              // Exclusively handle regular functionality
-              if (devices[currentDevice] != nullptr) {
-                  devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_RIGHT);
-              }
+          } else if (m5DialDisplay->isDisplayOn()) {
+              devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_RIGHT);
           }
 
-          lastRotaryEvent = now;
+          lastRotaryEvent = esphome::millis();
       }
 
       void shortButtonPress() {
