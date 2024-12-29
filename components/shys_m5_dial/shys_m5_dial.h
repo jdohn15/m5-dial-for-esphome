@@ -329,28 +329,44 @@ namespace esphome
       * 
       */
       void turnRotaryLeft(){
-        m5DialDisplay->resetLastEventTimer();
-        M5Dial.Speaker.tone(5000, 20);
+          unsigned long now = esphome::millis();
+          if (now - lastRotaryEvent < 100) { // Debounce time of 200ms
+              return;
+          }
 
-        if(m5DialDisplay->isDisplayOn()){
-          devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_LEFT);
-        }
+          m5DialDisplay->resetLastEventTimer();
+          M5Dial.Speaker.tone(5000, 20);
 
-        lastRotaryEvent = esphome::millis();
+          if (navigation_mode_.is_navigation_mode()) {
+              navigation_mode_.handle_rotary_knob(ROTARY_LEFT, currentDevice);
+              refreshDisplay(true); // Force refresh to reflect the change
+          } else if (m5DialDisplay->isDisplayOn()) {
+              devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_LEFT);
+          }
+
+          lastRotaryEvent = now;
       }
 
      /**
       * 
       */
-      void turnRotaryRight(){
-        m5DialDisplay->resetLastEventTimer();
-        M5Dial.Speaker.tone(5000, 20);
+      void turnRotaryRight() {
+          unsigned long now = esphome::millis();
+          if (now - lastRotaryEvent < 100) { // Debounce time of 200ms
+              return;
+          }
 
-        if(m5DialDisplay->isDisplayOn()){
-          devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_RIGHT);
-        }
+          m5DialDisplay->resetLastEventTimer();
+          M5Dial.Speaker.tone(5000, 20);
 
-        lastRotaryEvent = esphome::millis();
+          if (navigation_mode_.is_navigation_mode()) {
+              navigation_mode_.handle_rotary_knob(ROTARY_RIGHT, currentDevice);
+              refreshDisplay(true); // Force refresh to reflect the change
+          } else if (m5DialDisplay->isDisplayOn()) {
+              devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_RIGHT);
+          }
+
+          lastRotaryEvent = now;
       }
 
      /**
