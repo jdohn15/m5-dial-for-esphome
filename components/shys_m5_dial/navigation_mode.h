@@ -2,7 +2,7 @@
 
 #include "esphome.h"
 #include "globals.h"
-#include "M5Dial.h" // Include the M5Dial class for display operations
+#include "M5Dial.h"
 
 namespace esphome {
 namespace shys_m5_dial {
@@ -21,9 +21,20 @@ public:
         ESP_LOGI("NAVIGATION_MODE", "Exited navigation mode");
     }
 
-    void handle_rotary_knob(const char *direction) {
+    void handle_rotary_knob(const char *direction, int &currentDevice) {
         if (is_navigation_mode_) {
-            // Navigation logic here
+            if (strcmp(direction, ROTARY_LEFT) == 0) {
+                currentDevice--;
+                if (currentDevice < 0) {
+                    currentDevice = max_components_ - 1; // Wrap around
+                }
+            } else if (strcmp(direction, ROTARY_RIGHT) == 0) {
+                currentDevice++;
+                if (currentDevice >= max_components_) {
+                    currentDevice = 0; // Wrap around
+                }
+            }
+            ESP_LOGI("NAVIGATION_MODE", "Selected device index: %d", currentDevice);
         }
     }
 
@@ -38,27 +49,22 @@ public:
     }
 
     void update_display_for_selection(M5DialDisplay &display) {
-        // Access the LovyanGFX instance from M5DialDisplay
         LovyanGFX* gfx = display.getGfx();
 
-        // Screen dimensions
         const int circle_center_x = gfx->width() / 2;
-        const int circle_center_y = gfx->height() / 2 + 100; // Shift circle down by 30 pixels
+        const int circle_center_y = gfx->height() / 2 + 20; // Slightly lower
         const int outer_radius = 15;
-        const int line_thickness = 2; // Thickness of the circle line
+        const int line_thickness = 3; // Thicker line
         const int inner_radius = outer_radius - line_thickness;
 
-        // Draw the outer filled circle
         gfx->fillCircle(circle_center_x, circle_center_y, outer_radius, TFT_WHITE);
-
-        // Draw the inner circle in the background color to simulate a thicker line
         gfx->fillCircle(circle_center_x, circle_center_y, inner_radius, TFT_BLACK);
 
-        // Add "Navigation Mode" text
-        gfx->setTextColor(TFT_BLACK);      // Set text color
-        gfx->setTextSize(.5);               // Set smaller text size
-        gfx->setTextDatum(textdatum_t::middle_center); // Center text alignment
-        gfx->drawString("Navigation mode", circle_center_x, circle_center_y - 23); // Adjust text positions
+        gfx->setTextColor(TFT_BLACK);
+        gfx->setTextSize(1); // Smaller text
+        gfx->setTextDatum(textdatum_t::middle_center);
+        gfx->drawString("Navigation", circle_center_x, circle_center_y - 15);
+        gfx->drawString("Mode", circle_center_x, circle_center_y + 5);
     }
 
     bool is_navigation_mode() const { return is_navigation_mode_; }
