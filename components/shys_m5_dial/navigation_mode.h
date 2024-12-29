@@ -21,45 +21,55 @@ public:
         ESP_LOGI("NAVIGATION_MODE", "Exited navigation mode");
     }
 
-    void handle_rotary_knob(const char* direction, int& currentDevice) {
+    void handle_rotary_knob(const char* direction, int& currentDevice, M5DialDisplay& display, HaDevice** devices) {
+        bool forceRefresh = false;
+
         if (is_navigation_mode_) {
             if (strcmp(direction, ROTARY_LEFT) == 0) {
                 currentDevice--;
                 if (currentDevice < 0) {
                     currentDevice = max_components_ - 1; // Wrap around
                 }
+                forceRefresh = true;
             } else if (strcmp(direction, ROTARY_RIGHT) == 0) {
                 currentDevice++;
                 if (currentDevice >= max_components_) {
                     currentDevice = 0; // Wrap around
                 }
+                forceRefresh = true;
             }
+
+            if (forceRefresh) {
+                update_display_for_selection(display, currentDevice, devices);
+            }
+
             ESP_LOGI("NAVIGATION_MODE", "Current device index: %d", currentDevice);
         }
     }
 
-    void handle_button_press(const char* press_type) {
-        if (strcmp(press_type, BUTTON_LONG) == 0) {
-            if (is_navigation_mode_) {
-                exit_navigation_mode();
-            } else {
-                enter_navigation_mode();
-            }
-        }
-    }
+    void update_display_for_selection(M5DialDisplay& display, int currentDevice, HaDevice** devices) {
+        static int lastDisplayedDevice = -1;
 
-    void update_display_for_selection(M5DialDisplay& display, bool forceRefresh, int currentDevice, HaDevice** devices) {
-        // Example logic for refreshing the navigation mode display
+        // Only refresh if the selected device has changed
+        if (lastDisplayedDevice == currentDevice) {
+            return;
+        }
+
         LovyanGFX* gfx = display.getGfx();
 
-        if (forceRefresh) {
-            gfx->fillScreen(TFT_BLACK); // Clear the screen
-        }
+        // Clear the overlay area
+        gfx->fillRect(0, gfx->height() - 50, gfx->width(), 50, TFT_BLACK);
 
+        // Draw the navigation mode overlay
         gfx->setTextColor(TFT_WHITE);
         gfx->setTextDatum(textdatum_t::middle_center);
-        gfx->setTextSize(1);
-        gfx->drawString(devices[currentDevice]->getName().c_str(), gfx->width() / 2, gfx->height() / 2);
+        gfx->drawString("Navigation Mode", gfx->width() / 2, gfx->height() - 40);
+
+        // Draw the name of the currently selected device
+        gfx->drawString(devices[currentDevice]->getName().c_str(), gfx->width() / 2, gfx->height() - 20);
+
+        // Update the last displayed device
+        lastDisplayedDevice = currentDevice;
     }
 
     bool is_navigation_mode() const { return is_navigation_mode_; }
