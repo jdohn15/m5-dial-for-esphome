@@ -335,7 +335,7 @@ void refreshDisplay(bool forceRefresh) {
 
       void turnRotaryLeft() {
           unsigned long now = esphome::millis();
-          if (now - lastRotaryEvent < 100) { // Debounce time of 100ms
+          if (now - lastRotaryEvent < 10) { // Debounce time of 100ms
               return;
           }
 
@@ -359,7 +359,7 @@ void refreshDisplay(bool forceRefresh) {
 
       void turnRotaryRight() {
           unsigned long now = esphome::millis();
-          if (now - lastRotaryEvent < 100) { // Debounce time of 100ms
+          if (now - lastRotaryEvent < 10) { // Debounce time of 100ms
               return;
           }
 
