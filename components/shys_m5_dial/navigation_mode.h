@@ -50,25 +50,7 @@ public:
 
     void update_display_for_selection(M5DialDisplay &display) {
         // Access the LovyanGFX instance from M5DialDisplay
-        LovyanGFX* gfx = display.getGfx();
 
-        // Screen dimensions
-        const int circle_center_x = gfx->width() / 2;
-        const int circle_center_y = gfx->height() / 2 + 100; // Shift circle down by 100 pixels
-        const int outer_radius = 15;
-        const int line_thickness = 2; // Thickness of the circle line
-        const int inner_radius = outer_radius - line_thickness;
-
-        // Draw the outer filled circle
-        gfx->fillCircle(circle_center_x, circle_center_y, outer_radius, TFT_WHITE);
-
-        // Draw the inner circle in the background color to simulate a thicker line
-        gfx->fillCircle(circle_center_x, circle_center_y, inner_radius, TFT_BLACK);
-
-        // Add "Navigation Mode" text
-        gfx->setTextColor(TFT_BLACK);      // Set text color
-        gfx->setTextSize(.5);               // Set smaller text size
-        gfx->setTextDatum(textdatum_t::middle_center); // Center text alignment
     }
 
     bool is_navigation_mode() const { return is_navigation_mode_; }
