@@ -36,6 +36,17 @@ public:
             }
         }
     }
+    
+    const uint8_t circle_bitmap[] = {
+        0b00111100,
+        0b01111110,
+        0b11111111,
+        0b11111111,
+        0b11111111,
+        0b11111111,
+        0b01111110,
+        0b00111100
+    };
 
     void update_display_for_selection(M5DialDisplay &display) {
         const int circle_center_x = 160;  // Adjust for your display resolution
