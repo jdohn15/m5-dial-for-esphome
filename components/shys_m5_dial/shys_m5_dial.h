@@ -262,6 +262,9 @@ namespace esphome {
       * 
       */
       void doLoop(){
+        if (navigation_mode_.is_navigation_mode()) {
+            refreshDisplay(true); // Force refresh periodically in navigation mode
+        }
         if(api::global_api_server->is_connected()){
           m5DialRotary->handleRotary();
 
