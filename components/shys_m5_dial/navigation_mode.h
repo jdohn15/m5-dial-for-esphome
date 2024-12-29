@@ -19,11 +19,15 @@ public:
     }
 
 
-    void exit_navigation_mode() {
+    void exit_navigation_mode(M5DialDisplay& display, int currentDevice, HaDevice** devices) {
         is_navigation_mode_ = false;
         navigation_refresh_disabled_ = false; // Re-enable main refresh checks
         ESP_LOGI("NAVIGATION_MODE", "Exited navigation mode");
+    
+        // Force a single refresh of the regular display after exiting navigation
+        devices[currentDevice]->refreshDisplay(display, true);
     }
+
 
     bool is_navigation_mode() const { return is_navigation_mode_; }
 
