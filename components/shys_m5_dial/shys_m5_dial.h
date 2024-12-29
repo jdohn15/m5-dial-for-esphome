@@ -88,7 +88,7 @@ namespace esphome {
               lastDisplayValue = getCurrentValue();
               lastDisplayRefresh = esphome::millis();
           }
-
+      }
 
 
       void nextDevice() {
