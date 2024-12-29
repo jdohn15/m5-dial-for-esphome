@@ -1,5 +1,6 @@
 #pragma once
 #include "esphome.h"
+#include "esphome/components/climate/climate_mode.h"
 
 namespace esphome
 {
@@ -194,7 +195,7 @@ namespace esphome
 
                     esphome::api::global_api_server->send_homeassistant_service_call(resp);
 
-                    ESP_LOGI("HA_API", "set HVAC mode: %s for %s", mode.c_str(), entity.c_str());
+                    ESP_LOGI("HA_API", "set HVAC mode: %s for %s", mode, entity.c_str());
                 }
 
 
