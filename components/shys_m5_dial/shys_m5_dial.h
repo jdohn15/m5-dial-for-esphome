@@ -82,6 +82,7 @@ namespace esphome {
               lastDisplayDevice = currentDevice;
               lastModeIndex = devices[currentDevice]->getCurrentModeIndex();
               lastDisplayValue = getCurrentValue();
+              lastDisplayRefresh = esphome::millis();
           }
 
           // If in navigation mode, update the navigation overlay display
