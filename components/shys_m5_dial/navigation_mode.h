@@ -40,7 +40,7 @@ public:
             }
 
             if (forceRefresh) {
-                update_display_for_selection(display, currentDevice, devices);
+                update_display_for_selection(currentDevice);
             }
 
             ESP_LOGI("NAVIGATION_MODE", "Current device index: %d", currentDevice);
