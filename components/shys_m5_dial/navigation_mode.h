@@ -43,7 +43,7 @@ public:
 
         // Screen dimensions
         const int circle_center_x = gfx->width() / 2;
-        const int circle_center_y = gfx->height() / 2 + 160; // Shift circle down by 30 pixels
+        const int circle_center_y = gfx->height() / 2 + 130; // Shift circle down by 30 pixels
         const int outer_radius = 15;
         const int line_thickness = 2; // Thickness of the circle line
         const int inner_radius = outer_radius - line_thickness;
