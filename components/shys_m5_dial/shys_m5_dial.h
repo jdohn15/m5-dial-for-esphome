@@ -333,12 +333,12 @@ void refreshDisplay(bool forceRefresh) {
       * 
       */
 
-      void turnRotaryLeft(){
-        m5DialDisplay->resetLastEventTimer();
-        M5Dial.Speaker.tone(5000, 20);
+      void turnRotaryLeft() {
+          m5DialDisplay->resetLastEventTimer();
+          M5Dial.Speaker.tone(5000, 20);
 
           if (navigation_mode_.is_navigation_mode()) {
-              navigation_mode_.handle_rotary_knob(*m5DialDisplay, ROTARY_LEFT, currentDevice, deviceAnzahl);
+              navigation_mode_.handle_rotary_knob(ROTARY_LEFT, currentDevice); // Pass only direction and currentDevice
               refreshDisplay(true); // Force refresh to reflect the change
           } else if (m5DialDisplay->isDisplayOn()) {
               devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_LEFT);
@@ -352,14 +352,14 @@ void refreshDisplay(bool forceRefresh) {
           M5Dial.Speaker.tone(5000, 20);
 
           if (navigation_mode_.is_navigation_mode()) {
-              navigation_mode_.handle_rotary_knob(*m5DialDisplay, ROTARY_RIGHT, currentDevice, deviceAnzahl);
+              navigation_mode_.handle_rotary_knob(ROTARY_RIGHT, currentDevice); // Pass only direction and currentDevice
               refreshDisplay(true); // Force refresh to reflect the change
           } else if (m5DialDisplay->isDisplayOn()) {
               devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_RIGHT);
           }
 
-    lastRotaryEvent = esphome::millis();
-}
+          lastRotaryEvent = esphome::millis();
+      }
 
       void shortButtonPress() {
         m5DialDisplay->resetLastEventTimer();
