@@ -48,29 +48,34 @@ public:
     }
 
     void update_display_for_selection(M5DialDisplay& display, int currentDevice, HaDevice** devices) {
-        static int lastDisplayedDevice = -1;
-
-        // Only refresh if the selected device has changed
-        if (lastDisplayedDevice == currentDevice) {
-            return;
+        static int lastDisplayedDevice = -1;  // Track the last displayed device
+        static unsigned long lastRefreshTime = 0;  // Track the last refresh time
+    
+        unsigned long currentTime = esphome::millis();
+    
+        // Refresh only if the device index has changed or enough time has passed
+        if (lastDisplayedDevice != currentDevice || currentTime - lastRefreshTime > 700) {
+            LovyanGFX* gfx = display.getGfx();
+    
+            // Clear the overlay area
+            gfx->fillRect(0, gfx->height() - 50, gfx->width(), 50, TFT_BLACK);
+    
+            // Draw the navigation mode overlay
+            gfx->setTextColor(TFT_WHITE);
+            gfx->setTextDatum(textdatum_t::middle_center);
+            gfx->drawString("Navigation Mode", gfx->width() / 2, gfx->height() - 40);
+    
+            // Draw the name of the currently selected device
+            gfx->drawString(devices[currentDevice]->getName().c_str(), gfx->width() / 2, gfx->height() - 20);
+    
+            // Update tracking variables
+            lastDisplayedDevice = currentDevice;
+            lastRefreshTime = currentTime;
+    
+            ESP_LOGI("NAVIGATION_MODE", "Updated display for device: %s", devices[currentDevice]->getName().c_str());
         }
-
-        LovyanGFX* gfx = display.getGfx();
-
-        // Clear the overlay area
-        gfx->fillRect(0, gfx->height() - 50, gfx->width(), 50, TFT_BLACK);
-
-        // Draw the navigation mode overlay
-        gfx->setTextColor(TFT_WHITE);
-        gfx->setTextDatum(textdatum_t::middle_center);
-        gfx->drawString("Navigation Mode", gfx->width() / 2, gfx->height() - 40);
-
-        // Draw the name of the currently selected device
-        gfx->drawString(devices[currentDevice]->getName().c_str(), gfx->width() / 2, gfx->height() - 20);
-
-        // Update the last displayed device
-        lastDisplayedDevice = currentDevice;
     }
+
 
     bool is_navigation_mode() const { return is_navigation_mode_; }
 
