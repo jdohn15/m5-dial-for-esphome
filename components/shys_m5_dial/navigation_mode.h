@@ -46,14 +46,16 @@ public:
         display.drawBitmap(circle_bitmap, circle_size, circle_center_x - circle_size / 2,
                            circle_center_y - circle_size / 2, circle_size, circle_size);
 
-        // Add text inside or near the circle using a compatible text-drawing function
-        display.setCursor(circle_center_x - 40, circle_center_y - 10); // Adjust position
-        display.setTextSize(2);  // Font size
-        display.setTextColor(TFT_WHITE, TFT_BLACK); // Text and background color
-        display.print("Navigation");
+       
+        // Render "Navigation Mode" text using LovyanGFX
+        LovyanGFX* gfx = display.getGfx(); // Access the underlying LovyanGFX instance
+        gfx->setTextColor(TFT_WHITE);      // Set text color
+        gfx->setTextSize(2);               // Set text size
+        gfx->setTextDatum(textdatum_t::middle_center); // Center text alignment
 
-        display.setCursor(circle_center_x - 20, circle_center_y + 10); // Adjust position
-        display.print("Mode");
+        // Draw text
+        gfx->drawString("Navigation", circle_center_x, circle_center_y - 10);
+        gfx->drawString("Mode", circle_center_x, circle_center_y + 10);
     }
 
     bool is_navigation_mode() const { return is_navigation_mode_; }
