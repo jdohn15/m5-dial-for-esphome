@@ -47,7 +47,7 @@ public:
         }
     }
 
-    void update_display_for_selection(M5DialDisplay &display, int currentDevice, HaDevice **devices) {
+    void update_display_for_selection(M5DialDisplay &display) {
         // Access the LovyanGFX instance from M5DialDisplay
         LovyanGFX* gfx = display.getGfx();
 
