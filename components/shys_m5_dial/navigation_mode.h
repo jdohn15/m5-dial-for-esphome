@@ -46,7 +46,6 @@ public:
         display.drawBitmap(circle_bitmap, circle_size, circle_center_x - circle_size / 2,
                            circle_center_y - circle_size / 2, circle_size, circle_size);
 
-       
         // Render "Navigation Mode" text using LovyanGFX
         LovyanGFX* gfx = display.getGfx(); // Access the underlying LovyanGFX instance
         gfx->setTextColor(TFT_WHITE);      // Set text color
@@ -64,20 +63,8 @@ private:
     bool is_navigation_mode_ = false;
     int max_components_;
 
-    // Define the bitmap as a static constant
+    // Declare the bitmap as a static constant
     static const uint8_t circle_bitmap[8];
-};
-
-// Define the bitmap outside the class
-const uint8_t NavigationMode::circle_bitmap[8] = {
-    0b00111100,
-    0b01111110,
-    0b11111111,
-    0b11111111,
-    0b11111111,
-    0b11111111,
-    0b01111110,
-    0b00111100
 };
 
 } // namespace shys_m5_dial
