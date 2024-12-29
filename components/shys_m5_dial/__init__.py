@@ -140,8 +140,8 @@ CONFIG_SCHEMA = cv.Schema({
             cv.Required(CONF_DEVICE_ENTRY_ID): cv.string,
             cv.Required(CONF_DEVICE_ENTRY_NAME): cv.string,
 
-            cv.Optional(CONF_SEND_VALUE_DELAY, default=3000): cv.int_range(0, 999999),
-            cv.Optional(CONF_SEND_VALUE_LOCK, default=3000): cv.int_range(0, 999999),
+            cv.Optional(CONF_SEND_VALUE_DELAY, default=8000): cv.int_range(0, 999999),
+            cv.Optional(CONF_SEND_VALUE_LOCK, default=8000): cv.int_range(0, 999999),
             
             cv.Optional(CONF_DEVICE_MODES, default=dict()): cv.All(dict({
                 cv.Optional(CONF_DEVICE_CLIMATE_TEMP_MODE, default=dict()): cv.All(dict({
