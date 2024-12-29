@@ -73,14 +73,22 @@ namespace esphome {
         return false;
       }
 
-      void refreshDisplay(bool forceRefresh){
-        if(forceRefresh || isDisplayRefreshNeeded()){
-            devices[currentDevice]->refreshDisplay(*m5DialDisplay, lastDisplayDevice != currentDevice);
+      void refreshDisplay(bool forceRefresh) {
+          if (forceRefresh || isDisplayRefreshNeeded()) {
+              // Refresh the device's display
+              devices[currentDevice]->refreshDisplay(*m5DialDisplay, lastDisplayDevice != currentDevice);
 
-            lastDisplayDevice  = currentDevice;
-            lastModeIndex      = devices[currentDevice]->getCurrentModeIndex();
-            lastDisplayValue   = getCurrentValue();
-        }
+              // If in navigation mode, draw the overlay
+              if (navigation_mode_.is_navigation_mode()) {
+                  navigation_mode_.update_display_for_selection(*m5DialDisplay);
+              }
+
+              // Update tracking variables
+              lastDisplayDevice = currentDevice;
+              lastModeIndex = devices[currentDevice]->getCurrentModeIndex();
+              lastDisplayValue = getCurrentValue();
+              lastDisplayRefresh = esphome::millis();
+          }
       }
 
 
