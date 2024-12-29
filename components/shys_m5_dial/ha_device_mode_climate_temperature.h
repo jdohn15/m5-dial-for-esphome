@@ -37,7 +37,7 @@ namespace esphome
                     gfx->fillRect(0, 0, width, this->getDisplayPositionY(setTemperature), RED);
                     gfx->fillRect(0, this->getDisplayPositionY(setTemperature), width, height, YELLOW);
 
-                    display.setFontsize(3);
+                    display.setFontsize(1);
 
                     // Display the set temperature
                     gfx->drawString(("Set: " + String(setTemperature) + "°C").c_str(),
