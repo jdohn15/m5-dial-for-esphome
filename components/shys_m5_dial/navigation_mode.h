@@ -69,7 +69,6 @@ public:
         gfx->setTextColor(TFT_BLACK);      // Set text color
         gfx->setTextSize(.5);               // Set smaller text size
         gfx->setTextDatum(textdatum_t::middle_center); // Center text alignment
-        gfx->drawString("Navigation mode", circle_center_x, circle_center_y - 23); // Adjust text positions
     }
 
     bool is_navigation_mode() const { return is_navigation_mode_; }
