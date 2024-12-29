@@ -47,7 +47,7 @@ public:
         }
     }
 
-    void update_display_for_selection(M5DialDisplay& display, int currentDevice, HaDevice** devices) {
+    void update_display_for_selection(M5DialDisplay& display, int currentDevice) {
         static int lastDisplayedDevice = -1;
 
         // Only refresh if the selected device has changed
