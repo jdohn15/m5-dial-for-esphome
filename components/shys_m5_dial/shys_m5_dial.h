@@ -377,10 +377,17 @@ namespace esphome {
       }
 
       void touchInput(uint16_t x, uint16_t y) {
-        m5DialDisplay->resetLastEventTimer();
-        if (m5DialDisplay->isDisplayOn()) {
-          devices[currentDevice]->onTouch(*m5DialDisplay, x, y);
-        }
+          m5DialDisplay->resetLastEventTimer();
+    
+          // Block touch input if in navigation mode
+          if (navigation_mode_.is_navigation_mode()) {
+              ESP_LOGI("TOUCH", "Touch input ignored in navigation mode.");
+              return;
+          }
+    
+          if (m5DialDisplay->isDisplayOn()) {
+              devices[currentDevice]->onTouch(*m5DialDisplay, x, y);
+          }
       }
 
       void touchSwipe(const char* direction) {
