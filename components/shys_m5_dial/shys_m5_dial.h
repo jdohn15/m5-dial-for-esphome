@@ -64,11 +64,6 @@ namespace esphome {
       }
 
       bool isDisplayRefreshNeeded() {
-        if (navigation_mode_.is_navigation_mode()) {
-            // Always refresh in navigation mode to overlay the visuals
-            return true;
-        }
-        
         if (getCurrentValue() != lastDisplayValue ||
             currentDevice != lastDisplayDevice ||
             devices[currentDevice]->getCurrentModeIndex() != lastModeIndex ||
