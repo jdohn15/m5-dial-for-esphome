@@ -7,6 +7,7 @@ namespace esphome
         class HaDeviceModeClimateTemperature: public esphome::shys_m5_dial::HaDeviceMode {
             protected:
                 std::string hvac_mode = "none";
+                int current_temperature_ = 0; // Variable to store current temperature
 
                 std::string getHvacMode(){
                     return this->hvac_mode;
@@ -23,7 +24,7 @@ namespace esphome
                 void showTemperatureMenu(M5DialDisplay& display){
                     LovyanGFX* gfx = display.getGfx();
 
-                    uint16_t currentValue = getValue();
+                    uint16_t setTemperature = getValue(); // The set temperature
 
                     uint16_t height = gfx->height();
                     uint16_t width  = gfx->width();
@@ -31,25 +32,33 @@ namespace esphome
                     gfx->setTextColor(MAROON);
                     gfx->setTextDatum(middle_center);
                     
-                    gfx->startWrite();                      // Secure SPI bus
+                    gfx->startWrite(); // Secure SPI bus
 
-                    gfx->fillRect(0, 0, width, this->getDisplayPositionY(currentValue) , RED);
-                    gfx->fillRect(0, this->getDisplayPositionY(currentValue), width, height, YELLOW);
+                    gfx->fillRect(0, 0, width, this->getDisplayPositionY(setTemperature), RED);
+                    gfx->fillRect(0, this->getDisplayPositionY(setTemperature), width, height, YELLOW);
 
                     display.setFontsize(3);
-                    gfx->drawString(String(currentValue).c_str(),
+
+                    // Display the set temperature
+                    gfx->drawString(("Set: " + String(setTemperature) + "°C").c_str(),
                                     width / 2,
-                                    height / 2 - 30);                        
-                    
+                                    height / 2 - 30);
+
+                    // Display the current temperature
+                    gfx->drawString(("Current: " + String(this->current_temperature_) + "°C").c_str(),
+                                    width / 2,
+                                    height / 2 - 60);
+
                     display.setFontsize(1);
+
                     gfx->drawString(this->device.getName().c_str(),
                                     width / 2,
                                     height / 2 + 20);
                     gfx->drawString("Temperature",
                                     width / 2,
-                                    height / 2 + 50);  
+                                    height / 2 + 50);
 
-                    gfx->endWrite();                      // Release SPI bus
+                    gfx->endWrite(); // Release SPI bus
                 }
 
             public:
@@ -91,14 +100,15 @@ namespace esphome
 
                         if (!val.has_value()) {
                             this->setReceivedValue(0);
+                            this->current_temperature_ = 0; // Reset if no valid value
                             ESP_LOGD("HA_API", "No Temperature value in %s for %s", state.c_str(), this->device.getEntityId().c_str());
                         } else {
                             this->setReceivedValue(int(val.value()));
+                            this->current_temperature_ = int(val.value());
                             ESP_LOGI("HA_API", "Got Temperature value %i for %s", int(val.value()), this->device.getEntityId().c_str());
                         }
                     });
                 }
-
 
                 bool onTouch(M5DialDisplay& display, uint16_t x, uint16_t y) override {
                     return defaultOnTouch(display, x, y);        
@@ -109,8 +119,8 @@ namespace esphome
                 }
 
                 bool onButton(M5DialDisplay& display, const char * clickType) override {
-                    if (strcmp(clickType, BUTTON_SHORT)==0){
-                        if(strcmp(this->getHvacMode().c_str(), "off")==0){
+                    if (strcmp(clickType, BUTTON_SHORT) == 0) {
+                        if (strcmp(this->getHvacMode().c_str(), "off") == 0) {
                             haApi.turnClimateOn(this->device.getEntityId(), "heat");
                         } else {
                             haApi.turnClimateOff(this->device.getEntityId());
@@ -120,7 +130,6 @@ namespace esphome
                     } 
                     return false;
                 }
-
         };
     }
 }
