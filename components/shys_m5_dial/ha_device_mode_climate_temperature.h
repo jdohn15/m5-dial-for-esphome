@@ -54,7 +54,7 @@ namespace esphome
 
             public:
                 HaDeviceModeClimateTemperature(HaDevice& device) : HaDeviceMode(device){
-                    this->maxValue = 80;
+                    this->maxValue = 40;
                 }
 
                 void refreshDisplay(M5DialDisplay& display, bool init) override {
@@ -110,15 +110,10 @@ namespace esphome
 
                 bool onButton(M5DialDisplay& display, const char * clickType) override {
                     if (strcmp(clickType, BUTTON_SHORT)==0){
-                        if(strcmp(this->getHvacMode().c_str(), "off")==0)
-                        {
+                        if(strcmp(this->getHvacMode().c_str(), "off")==0){
                             haApi.turnClimateOn(this->device.getEntityId(), "heat");
-                            this->setHvacMode("heat");  
-                        } 
-                        else 
-                        {
+                        } else {
                             haApi.turnClimateOff(this->device.getEntityId());
-                            this->setHvacMode("off");
                         }
                         
                         return true;
