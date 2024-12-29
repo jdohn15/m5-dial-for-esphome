@@ -1,6 +1,5 @@
 #pragma once
 #include "esphome.h"
-#include "esphome/components/climate/climate_mode.h"
 
 namespace esphome
 {
