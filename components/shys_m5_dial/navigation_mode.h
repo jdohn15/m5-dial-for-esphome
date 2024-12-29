@@ -21,7 +21,7 @@ public:
         ESP_LOGI("NAVIGATION_MODE", "Exited navigation mode");
     }
 
-    void handle_rotary_knob(const char* direction, int& currentDevice) {
+    void handle_rotary_knob(const char* direction, int& currentDevice, M5DialDisplay& display, HaDevice** devices) {
         bool forceRefresh = false;
 
         if (is_navigation_mode_) {
@@ -40,14 +40,14 @@ public:
             }
 
             if (forceRefresh) {
-                update_display_for_selection(currentDevice);
+                update_display_for_selection(display, currentDevice, devices);
             }
 
             ESP_LOGI("NAVIGATION_MODE", "Current device index: %d", currentDevice);
         }
     }
 
-    void update_display_for_selection(M5DialDisplay& display, int currentDevice) {
+    void update_display_for_selection(M5DialDisplay& display, int currentDevice, HaDevice** devices) {
         static int lastDisplayedDevice = -1;
 
         // Only refresh if the selected device has changed
