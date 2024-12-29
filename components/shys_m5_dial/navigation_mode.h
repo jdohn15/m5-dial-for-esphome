@@ -42,8 +42,6 @@ public:
         const int circle_center_y = 120;  // Adjust for your display resolution
         const int circle_radius = 50;
 
-        // Clear the screen
-        display.clear();  // If supported, clear the screen
 
     // Draw the circle bitmap
         display.drawBitmap(circle_center_x - circle_size / 2, circle_center_y - circle_size / 2,
