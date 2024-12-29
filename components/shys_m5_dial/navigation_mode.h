@@ -43,7 +43,7 @@ public:
 
         // Screen dimensions
         const int circle_center_x = gfx->width() / 2;
-        const int circle_center_y = gfx->height() / 2;
+        const int circle_center_y = gfx->height() / 2 + 30; // Shift circle down by 30 pixels
         const int outer_radius = 50;
         const int line_thickness = 6; // Thickness of the circle line
         const int inner_radius = outer_radius - line_thickness;
@@ -58,8 +58,8 @@ public:
         gfx->setTextColor(TFT_WHITE);      // Set text color
         gfx->setTextSize(1);               // Set smaller text size
         gfx->setTextDatum(textdatum_t::middle_center); // Center text alignment
-        gfx->drawString("Navigation", circle_center_x, circle_center_y - 10);
-        gfx->drawString("Mode", circle_center_x, circle_center_y + 10);
+        gfx->drawString("Navigation", circle_center_x, circle_center_y - 30); // Adjust text positions
+        gfx->drawString("Mode", circle_center_x, circle_center_y - 10);      // Adjust text positions
     }
 
     bool is_navigation_mode() const { return is_navigation_mode_; }
