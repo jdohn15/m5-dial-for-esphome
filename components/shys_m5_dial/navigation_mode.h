@@ -1,6 +1,7 @@
 #pragma once
 
 #include "esphome.h"
+#include "globals.h"
 
 namespace esphome {
 namespace shys_m5_dial {
@@ -33,6 +34,7 @@ public:
                     selected_component_index_ = 0; // Wrap around
                 }
             }
+            ESP_LOGI("NAVIGATION_MODE", "Selected component index: %d", selected_component_index_);
             update_display_for_selection();
         }
     }
