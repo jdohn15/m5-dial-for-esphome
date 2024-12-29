@@ -23,9 +23,9 @@ namespace esphome {
     class ShysM5Dial : public Component, public esphome::api::CustomAPIDevice {
     protected:
       int timeToScreenOff = 30000;
-      int longPressMs = 1200;
+      int longPressMs = 400;
       int rotaryStepWidth = 10;
-      uint16_t displayRefeshPause = 700;
+      uint16_t displayRefeshPause = 1400;
 
       int apiSendDelay = 1000; // Delay after value change to avoid frequent updates
       int apiSendLock = 3000;  // Lock time between API calls
