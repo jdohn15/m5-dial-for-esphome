@@ -47,27 +47,28 @@ public:
         }
     }
 
-    void update_display_for_selection(M5DialDisplay &display) {
-        // Access the LovyanGFX instance from M5DialDisplay
-        LovyanGFX* gfx = display.getGfx();
-
-
-        // Draw the navigation circle
-        const int circle_center_x = gfx->width() / 2;
-        const int circle_center_y = gfx->height() / 2 + 100; // Shift circle down
-        const int outer_radius = 15;
-        const int line_thickness = 2;
-        const int inner_radius = outer_radius - line_thickness;
-
-        gfx->fillCircle(circle_center_x, circle_center_y, outer_radius, TFT_WHITE);
-        gfx->fillCircle(circle_center_x, circle_center_y, inner_radius, TFT_BLACK);
-
-        // Draw "Navigation Mode" text
-        gfx->setTextColor(TFT_BLACK);
-        gfx->setTextSize(0.5);
-        gfx->setTextDatum(textdatum_t::middle_center);
-        gfx->drawString("Navigation mode", circle_center_x, circle_center_y - 23);
+    void update_display_for_selection(M5DialDisplay &display, bool shouldUpdate, int currentDevice, const std::string &deviceName) {
+        static int lastDevice = -1; // Track the last device displayed to avoid unnecessary redraws
+    
+        if (shouldUpdate || lastDevice != currentDevice) {
+            LovyanGFX* gfx = display.getGfx();
+    
+            // Clear only the overlay area
+            gfx->fillRect(0, gfx->height() - 50, gfx->width(), 50, TFT_BLACK);
+    
+            // Draw the navigation mode overlay
+            gfx->setTextColor(TFT_WHITE);
+            gfx->setTextDatum(textdatum_t::middle_center);
+            gfx->drawString("Navigation Mode", gfx->width() / 2, gfx->height() - 40);
+    
+            // Draw the name of the currently selected device
+            gfx->drawString(deviceName.c_str(), gfx->width() / 2, gfx->height() - 20);
+    
+            // Update the last displayed device
+            lastDevice = currentDevice;
+        }
     }
+
 
 
 
