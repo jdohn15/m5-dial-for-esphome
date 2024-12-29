@@ -354,16 +354,17 @@ namespace esphome {
       }
 
       void longButtonPress() {
-        m5DialDisplay->resetLastEventTimer();
-
-        if (navigation_mode_.is_navigation_mode()) {
-          navigation_mode_.exit_navigation_mode();
-        } else {
-          navigation_mode_.enter_navigation_mode();
-        }
-
-        refreshDisplay(true);
+          m5DialDisplay->resetLastEventTimer();
+      
+          if (navigation_mode_.is_navigation_mode()) {
+              navigation_mode_.exit_navigation_mode();
+          } else {
+              navigation_mode_.enter_navigation_mode(*m5DialDisplay, currentDevice, devices);
+          }
+      
+          refreshDisplay(true);
       }
+
 
       void touchInput(uint16_t x, uint16_t y) {
           m5DialDisplay->resetLastEventTimer();
