@@ -178,6 +178,26 @@ namespace esphome
                     ESP_LOGI("HA_API", "set temperature: %i for %s", temperature, entity.c_str());
                 }
 
+                void setClimateMode(const std::string &entity, const std::string &mode) {
+                    esphome::api::HomeassistantServiceResponse resp;
+                    esphome::api::HomeassistantServiceMap resp_kv;
+
+                    resp.service = "climate.set_hvac_mode";
+
+                    resp_kv.key = "entity_id";
+                    resp_kv.value = entity.c_str();
+                    resp.data.push_back(resp_kv);
+
+                    resp_kv.key = "hvac_mode";
+                    resp_kv.value = mode.c_str();
+                    resp.data.push_back(resp_kv);
+
+                    esphome::api::global_api_server->send_homeassistant_service_call(resp);
+
+                    ESP_LOGI("HA_API", "set HVAC mode: %s for %s", mode.c_str(), entity.c_str());
+                }
+
+
 
 
 // ---------------------------------
