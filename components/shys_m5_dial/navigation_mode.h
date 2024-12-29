@@ -47,27 +47,28 @@ public:
         }
     }
 
-    void update_display_for_selection(M5DialDisplay &display) {
+    void update_display_for_selection(M5DialDisplay &display, int currentDevice, HaDevice **devices) {
         // Access the LovyanGFX instance from M5DialDisplay
         LovyanGFX* gfx = display.getGfx();
     
-        static int last_selection = -1; // Track last drawn selection to avoid redundant draws
+        static int last_selection = -1; // Track the last drawn selection to avoid redundant updates
     
+        // Check if the selection has changed; skip unnecessary drawing
         if (last_selection == currentDevice) {
-            return; // Skip drawing if the selection hasn't changed
+            return; // No changes, skip update
         }
     
         last_selection = currentDevice;
     
-        // Clear only the overlay area (not the entire screen)
+        // Clear the overlay area (specific to navigation mode)
         gfx->fillRect(0, gfx->height() - 50, gfx->width(), 50, TFT_BLACK);
     
-        // Add "Navigation Mode" text
+        // Draw the "Navigation Mode" text
         gfx->setTextColor(TFT_WHITE);
         gfx->setTextDatum(middle_center);
         gfx->drawString("Navigation Mode", gfx->width() / 2, gfx->height() - 40);
     
-        // Draw the current entity name
+        // Draw the name of the currently selected entity
         gfx->drawString(devices[currentDevice]->getName().c_str(), gfx->width() / 2, gfx->height() - 20);
     }
 
