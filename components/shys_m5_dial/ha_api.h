@@ -128,19 +128,26 @@ namespace esphome
 //          CLIMATE
 // ---------------------------------
 
-                void turnClimateOn(const std::string& entity) {
+                void turnClimateOn(const std::string &entity, const std::string &hvac_mode) {
                     esphome::api::HomeassistantServiceResponse resp;
                     esphome::api::HomeassistantServiceMap resp_kv;
 
-                    resp.service = "climate.turn_on";
+                    resp.service = "climate.set_hvac_mode";
 
+                    // Set the entity ID
                     resp_kv.key = "entity_id";
                     resp_kv.value = entity.c_str();
                     resp.data.push_back(resp_kv);
 
+                    // Set the HVAC mode
+                    resp_kv.key = "hvac_mode";
+                    resp_kv.value = hvac_mode.c_str();
+                    resp.data.push_back(resp_kv);
+
+                    // Send the service call to Home Assistant
                     esphome::api::global_api_server->send_homeassistant_service_call(resp);
-                    
-                    ESP_LOGI("HA_API", "turn on climate: %s", entity.c_str());
+
+                    ESP_LOGI("HA_API", "Turn climate on: %s with mode: %s", entity.c_str(), hvac_mode.c_str());
                 }
 
                 void turnClimateOff(const std::string& entity) {
@@ -177,25 +184,6 @@ namespace esphome
                     esphome::api::global_api_server->send_homeassistant_service_call(resp);
                     
                     ESP_LOGI("HA_API", "set temperature: %i for %s", temperature, entity.c_str());
-                }
-
-                void setClimateMode(const std::string &entity, const std::string &mode) {
-                    esphome::api::HomeassistantServiceResponse resp;
-                    esphome::api::HomeassistantServiceMap resp_kv;
-
-                    resp.service = "climate.set_hvac_mode";
-
-                    resp_kv.key = "entity_id";
-                    resp_kv.value = entity.c_str();
-                    resp.data.push_back(resp_kv);
-
-                    resp_kv.key = "hvac_mode";
-                    resp_kv.value = mode.c_str();  // Ensure mode is passed as a string
-                    resp.data.push_back(resp_kv);
-
-                    esphome::api::global_api_server->send_homeassistant_service_call(resp);
-
-                    ESP_LOGI("HA_API", "set HVAC mode: %s for %s", mode.c_str(), entity.c_str());
                 }
 
 
