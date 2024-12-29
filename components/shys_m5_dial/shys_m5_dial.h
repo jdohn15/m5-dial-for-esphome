@@ -25,7 +25,7 @@ namespace esphome {
       int timeToScreenOff = 30000;
       int longPressMs = 400;
       int rotaryStepWidth = 10;
-      uint16_t displayRefeshPause = 1400;
+      uint16_t displayRefeshPause = 700;
 
       int apiSendDelay = 1000; // Delay after value change to avoid frequent updates
       int apiSendLock = 3000;  // Lock time between API calls
