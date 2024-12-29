@@ -140,6 +140,9 @@ CONFIG_SCHEMA = cv.Schema({
             cv.Required(CONF_DEVICE_ENTRY_ID): cv.string,
             cv.Required(CONF_DEVICE_ENTRY_NAME): cv.string,
 
+            cv.Optional(CONF_SEND_VALUE_DELAY, default=DEFAULT_SEND_VALUE_DELAY): cv.int_range(0, 999999),
+            cv.Optional(CONF_SEND_VALUE_LOCK, default=DEFAULT_SEND_VALUE_LOCK): cv.int_range(0, 999999),
+            
             cv.Optional(CONF_DEVICE_MODES, default=dict()): cv.All(dict({
                 cv.Optional(CONF_DEVICE_CLIMATE_TEMP_MODE, default=dict()): cv.All(dict({
                     cv.Optional(CONF_ROTARY_STEP_WIDTH, default=DEFAULT_CLIMATE_ROTARY_STEP_WIDTH): cv.int_range(1, 500),
@@ -267,6 +270,9 @@ def to_code(config):
         if CONF_DEVICE_CLIMATES in confDevices:
             confClimates = confDevices[CONF_DEVICE_CLIMATES]
             for climateEntry in confClimates:
+                send_value_delay = climateEntry.get(CONF_SEND_VALUE_DELAY, DEFAULT_SEND_VALUE_DELAY)
+                send_value_lock = climateEntry.get(CONF_SEND_VALUE_LOCK, DEFAULT_SEND_VALUE_LOCK)
+                
                 cg.add(var.addClimate(climateEntry[CONF_DEVICE_ENTRY_ID], 
                                       climateEntry[CONF_DEVICE_ENTRY_NAME], 
                                       json.dumps(climateEntry[CONF_DEVICE_MODES])
