@@ -333,26 +333,22 @@ void refreshDisplay(bool forceRefresh) {
       * 
       */
 
-      void turnRotaryLeft() {
+      void turnRotaryLeft(){
         m5DialDisplay->resetLastEventTimer();
         M5Dial.Speaker.tone(5000, 20);
 
-        if (navigation_mode_.is_navigation_mode()) {
-          navigation_mode_.handle_rotary_knob(*m5DialDisplay, ROTARY_LEFT);
-        } else if (m5DialDisplay->isDisplayOn()) {
+        if(m5DialDisplay->isDisplayOn()){
           devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_LEFT);
         }
 
         lastRotaryEvent = esphome::millis();
       }
 
-      void turnRotaryRight() {
+      void turnRotaryRight(){
         m5DialDisplay->resetLastEventTimer();
         M5Dial.Speaker.tone(5000, 20);
 
-        if (navigation_mode_.is_navigation_mode()) {
-          navigation_mode_.handle_rotary_knob(*m5DialDisplay, ROTARY_RIGHT);
-        } else if (m5DialDisplay->isDisplayOn()) {
+        if(m5DialDisplay->isDisplayOn()){
           devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_RIGHT);
         }
 
