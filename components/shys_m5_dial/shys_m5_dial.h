@@ -339,7 +339,6 @@ void refreshDisplay(bool forceRefresh) {
 
         if (navigation_mode_.is_navigation_mode()) {
           navigation_mode_.handle_rotary_knob(ROTARY_LEFT);
-          refreshDisplay(true);
         } else if (m5DialDisplay->isDisplayOn()) {
           devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_LEFT);
         }
