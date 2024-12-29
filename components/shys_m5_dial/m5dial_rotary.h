@@ -43,7 +43,7 @@ namespace esphome
                 * 
                 */
                 void setLongPressDuration(int value){
-                    longPressMs = 350;
+                    longPressMs = 300;
                 }
 
                /**
