@@ -43,15 +43,15 @@ public:
         const int circle_radius = 50;
 
         // Clear the screen
-        display.fillScreen(TFT_BLACK);
+        display.clear();  // If supported, clear the screen
 
-        // Draw the circle
-        display.drawCircle(circle_center_x, circle_center_y, circle_radius, TFT_WHITE);
+    // Draw the circle bitmap
+        display.drawBitmap(circle_center_x - circle_size / 2, circle_center_y - circle_size / 2,
+                       circle_bitmap, circle_size, circle_size, true);
 
-        // Draw text inside the circle
-        display.setTextColor(TFT_WHITE, TFT_BLACK);
-        display.drawCentreString("Navigation", circle_center_x, circle_center_y - 10, 2); // Adjust text position
-        display.drawCentreString("Mode", circle_center_x, circle_center_y + 10, 2);      // Adjust text position
+    // Add text inside the circle
+        display.print("Navigation", circle_center_x - 40, circle_center_y - 10);
+        display.print("Mode", circle_center_x - 20, circle_center_y + 10);
     }
 
     bool is_navigation_mode() const { return is_navigation_mode_; }
