@@ -73,15 +73,24 @@ namespace esphome {
         return false;
       }
 
-      void refreshDisplay(bool forceRefresh){
-        if(forceRefresh || isDisplayRefreshNeeded()){
-            devices[currentDevice]->refreshDisplay(*m5DialDisplay, lastDisplayDevice != currentDevice);
+      void refreshDisplay(bool forceRefresh) {
+          if (forceRefresh || isDisplayRefreshNeeded()) {
+              if (!navigation_mode_.is_navigation_mode()) {
+                  // Only refresh the device display if not in navigation mode
+                  devices[currentDevice]->refreshDisplay(*m5DialDisplay, lastDisplayDevice != currentDevice);
+              } else {
+                  // If in navigation mode, update the navigation display
+                  navigation_mode_.update_display_for_selection(*m5DialDisplay);
+              }
 
-            lastDisplayDevice  = currentDevice;
-            lastModeIndex      = devices[currentDevice]->getCurrentModeIndex();
-            lastDisplayValue   = getCurrentValue();
-        }
+              // Update tracking variables
+              lastDisplayDevice = currentDevice;
+              lastModeIndex = devices[currentDevice]->getCurrentModeIndex();
+              lastDisplayValue = getCurrentValue();
+              lastDisplayRefresh = esphome::millis();
+          }
       }
+
 
       void nextDevice() {
         if (currentDevice >= deviceAnzahl - 1) {
