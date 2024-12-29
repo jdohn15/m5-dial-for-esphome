@@ -40,12 +40,12 @@ namespace esphome
                     display.setFontsize(1);
 
                     // Display the set temperature
-                    gfx->drawString(("Set: " + String(setTemperature) + "°C").c_str(),
+                    gfx->drawString(("Set: " + String(setTemperature) + "°F").c_str(),
                                     width / 2,
                                     height / 2 - 30);
 
-                    // Display the current temperature
-                    gfx->drawString(("Current: " + String(this->current_temperature_) + "°C").c_str(),
+                    // Display the current temperature from the sensor
+                    gfx->drawString(("Current: " + String(this->current_temperature_) + "°F").c_str(),
                                     width / 2,
                                     height / 2 - 60);
 
@@ -86,26 +86,21 @@ namespace esphome
                         ESP_LOGI("HA_API", "Got Mode %s for %s", state.c_str(), this->device.getEntityId().c_str());
                     });
 
-                    std::string attrNameTemp = "temperature";
+                    // Listen for updates from `sensor.dining_room_temperature_2`
+                    std::string sensorEntityId = "sensor.dining_room_temperature_2";
                     api::global_api_server->subscribe_home_assistant_state(
-                                this->device.getEntityId().c_str(),
-                                attrNameTemp, 
+                                sensorEntityId.c_str(),
+                                "",
                                 [this](const std::string &state) {
-
-                        if(this->isValueModified()){
-                            return;
-                        }
 
                         auto val = parse_number<float>(state);
 
                         if (!val.has_value()) {
-                            this->setReceivedValue(0);
                             this->current_temperature_ = 0; // Reset if no valid value
-                            ESP_LOGD("HA_API", "No Temperature value in %s for %s", state.c_str(), this->device.getEntityId().c_str());
+                            ESP_LOGD("HA_API", "No valid temperature value in %s for %s", state.c_str(), sensorEntityId.c_str());
                         } else {
-                            this->setReceivedValue(int(val.value()));
                             this->current_temperature_ = int(val.value());
-                            ESP_LOGI("HA_API", "Got Temperature value %i for %s", int(val.value()), this->device.getEntityId().c_str());
+                            ESP_LOGI("HA_API", "Got current temperature value %i from %s", int(val.value()), sensorEntityId.c_str());
                         }
                     });
                 }
