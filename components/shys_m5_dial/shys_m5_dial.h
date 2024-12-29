@@ -370,6 +370,7 @@ namespace esphome {
       }
 
 
+
       void touchInput(uint16_t x, uint16_t y) {
           m5DialDisplay->resetLastEventTimer();
     
