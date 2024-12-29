@@ -49,6 +49,7 @@ public:
     }
 
     void update_display_for_selection(M5DialDisplay &display) {
+        ESP_LOGI("NAVIGATION_MODE", "Updating display in navigation mode.");
         // Access the LovyanGFX instance from M5DialDisplay
         LovyanGFX* gfx = display.getGfx();
 
