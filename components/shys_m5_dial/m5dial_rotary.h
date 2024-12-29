@@ -12,7 +12,7 @@ namespace esphome
                 std::function<void(void)> short_button_press_action;
                 std::function<void(void)> long_button_press_action;
 
-                int longPressMs = 1500;
+                int longPressMs = 350;
 
                 long oldPosition = 0;
                 bool longPress = false;
