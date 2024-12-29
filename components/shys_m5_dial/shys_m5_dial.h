@@ -405,7 +405,7 @@ namespace esphome {
             } else if(strcmp(direction, TOUCH_SWIPE_DOWN)==0){
               devices[currentDevice]->nextMode();
             } 
-
+            refreshDisplay(true);
           }
         }
       }
