@@ -52,8 +52,6 @@ public:
         // Access the LovyanGFX instance from M5DialDisplay
         LovyanGFX* gfx = display.getGfx();
 
-        // Avoid clearing the screen entirely
-        ESP_LOGI("NAVIGATION", "Drawing navigation overlay.");
 
         // Draw the navigation circle
         const int circle_center_x = gfx->width() / 2;
