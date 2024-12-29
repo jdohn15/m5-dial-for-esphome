@@ -81,10 +81,8 @@ public:
     }
 
 
-    bool is_navigation_mode() const { return is_navigation_mode_; }
 
 private:
-    bool is_navigation_mode_ = false;
     int max_components_;
     bool is_navigation_mode_ = false;
     bool navigation_refresh_disabled_ = false; // Added field
