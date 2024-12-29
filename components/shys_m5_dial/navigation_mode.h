@@ -11,10 +11,14 @@ class NavigationMode {
 public:
     NavigationMode(int max_components) : max_components_(max_components) {}
 
-    void enter_navigation_mode() {
+    void enter_navigation_mode(M5DialDisplay& display, int currentDevice, HaDevice** devices) {
         is_navigation_mode_ = true;
         ESP_LOGI("NAVIGATION_MODE", "Entered navigation mode");
+    
+        // Initialize the display for navigation mode
+        update_display_for_selection(display, currentDevice, devices);
     }
+
 
     void exit_navigation_mode() {
         is_navigation_mode_ = false;
