@@ -21,7 +21,7 @@ public:
         ESP_LOGI("NAVIGATION_MODE", "Exited navigation mode");
     }
 
-    void handle_rotary_knob(const char *direction, int &currentDevice) {
+    void handle_rotary_knob(const char *direction, int &currentDevice, int deviceAnzahl) {
         if (is_navigation_mode_) {
             if (strcmp(direction, ROTARY_LEFT) == 0) {
                 currentDevice--;
