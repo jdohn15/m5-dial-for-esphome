@@ -326,8 +326,14 @@ namespace esphome {
      /**
       * 
       */
-      void turnRotaryLeft() {
+      void turnRotaryLeft(){
+          unsigned long now = esphome::millis();
+          if (now - lastRotaryEvent < 100) { // Debounce time of 200ms
+              return;
+          }
+
           m5DialDisplay->resetLastEventTimer();
+          M5Dial.Speaker.tone(5000, 20);
 
           if (navigation_mode_.is_navigation_mode()) {
               navigation_mode_.handle_rotary_knob(ROTARY_LEFT, currentDevice);
@@ -336,12 +342,20 @@ namespace esphome {
               devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_LEFT);
           }
 
-          lastRotaryEvent = esphome::millis();
+          lastRotaryEvent = now;
       }
 
-
+     /**
+      * 
+      */
       void turnRotaryRight() {
+          unsigned long now = esphome::millis();
+          if (now - lastRotaryEvent < 100) { // Debounce time of 200ms
+              return;
+          }
+
           m5DialDisplay->resetLastEventTimer();
+          M5Dial.Speaker.tone(5000, 20);
 
           if (navigation_mode_.is_navigation_mode()) {
               navigation_mode_.handle_rotary_knob(ROTARY_RIGHT, currentDevice);
@@ -350,7 +364,7 @@ namespace esphome {
               devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_RIGHT);
           }
 
-          lastRotaryEvent = esphome::millis();
+          lastRotaryEvent = now;
       }
 
       void shortButtonPress() {
