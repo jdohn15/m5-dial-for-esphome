@@ -73,16 +73,13 @@ namespace esphome {
         return false;
       }
 
-      void refreshDisplay(bool forceRefresh) {
-        if (forceRefresh || isDisplayRefreshNeeded()) {
-          if (navigation_mode_.is_navigation_mode()) {
-            navigation_mode_.update_display_for_selection(*m5DialDisplay);
-          } else {
+      void refreshDisplay(bool forceRefresh){
+        if(forceRefresh || isDisplayRefreshNeeded()){
             devices[currentDevice]->refreshDisplay(*m5DialDisplay, lastDisplayDevice != currentDevice);
-          }
-          lastDisplayDevice = currentDevice;
-          lastModeIndex = devices[currentDevice]->getCurrentModeIndex();
-          lastDisplayValue = getCurrentValue();
+
+            lastDisplayDevice  = currentDevice;
+            lastModeIndex      = devices[currentDevice]->getCurrentModeIndex();
+            lastDisplayValue   = getCurrentValue();
         }
       }
 
