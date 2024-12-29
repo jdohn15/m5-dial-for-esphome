@@ -119,6 +119,7 @@ namespace esphome
                         else 
                         {
                             haApi.turnClimateOff(this->device.getEntityId());
+                            this->setHvacMode("off");
                         }
                         
                         return true;
