@@ -344,7 +344,7 @@ void refreshDisplay(bool forceRefresh) {
 
           if (navigation_mode_.is_navigation_mode()) {
               // Exclusively handle navigation mode logic
-              navigation_mode_.handle_rotary_knob(ROTARY_LEFT, currentDevice);
+              navigation_mode_.handle_rotary_knob(ROTARY_LEFT, currentDevice, deviceAnzahl);
               refreshDisplay(true); // Force refresh to reflect the change
           } else if (!navigation_mode_.is_navigation_mode() && m5DialDisplay->isDisplayOn()) {
               // Exclusively handle regular functionality
@@ -368,7 +368,7 @@ void refreshDisplay(bool forceRefresh) {
 
           if (navigation_mode_.is_navigation_mode()) {
               // Exclusively handle navigation mode logic
-              navigation_mode_.handle_rotary_knob(ROTARY_RIGHT, currentDevice);
+              navigation_mode_.handle_rotary_knob(ROTARY_RIGHT, currentDevice, deviceAnzahl);
               refreshDisplay(true); // Force refresh to reflect the change
           } else if (!navigation_mode_.is_navigation_mode() && m5DialDisplay->isDisplayOn()) {
               // Exclusively handle regular functionality
