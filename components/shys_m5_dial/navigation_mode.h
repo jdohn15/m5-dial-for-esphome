@@ -86,6 +86,8 @@ public:
 private:
     bool is_navigation_mode_ = false;
     int max_components_;
+    bool is_navigation_mode_ = false;
+    bool navigation_refresh_disabled_ = false; // Added field
 };
 
 } // namespace shys_m5_dial
