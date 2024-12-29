@@ -84,11 +84,12 @@ namespace esphome
     void refreshDisplay(bool forceRefresh) {
         if (forceRefresh || isDisplayRefreshNeeded()) {
             if (navigation_mode_.is_navigation_mode()) {
-                navigation_mode_.update_display_for_selection();
+                // Pass the display object to update_display_for_selection
+                navigation_mode_.update_display_for_selection(*m5DialDisplay);
             } else {
+                // Refresh display for the current device
                 devices[currentDevice]->refreshDisplay(*m5DialDisplay, lastDisplayDevice != currentDevice);
             }
-
             lastDisplayDevice = currentDevice;
             lastModeIndex = devices[currentDevice]->getCurrentModeIndex();
             lastDisplayValue = getCurrentValue();
@@ -383,12 +384,17 @@ namespace esphome
      /**
       * 
       */
-      void longButtonPress(){
-        if (m5DialDisplay->isDisplayOn()) {
-            m5DialDisplay->resetLastEventTimer();
-        }
-        navigation_mode_.handle_button_press(BUTTON_LONG);
-      }
+      void longButtonPress() {
+          m5DialDisplay->resetLastEventTimer();
+
+          if (navigation_mode_.is_navigation_mode()) {
+              navigation_mode_.exit_navigation_mode();
+          } else {
+              navigation_mode_.enter_navigation_mode();
+          }
+
+    refreshDisplay(true);  // Force refresh to update the display
+}
 
      /**
       * 
