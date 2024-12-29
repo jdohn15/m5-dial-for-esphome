@@ -340,7 +340,6 @@ void refreshDisplay(bool forceRefresh) {
           }
 
           m5DialDisplay->resetLastEventTimer();
-          M5Dial.Speaker.tone(5000, 20);
 
           if (navigation_mode_.is_navigation_mode()) {
               // Exclusively handle navigation mode logic
@@ -364,7 +363,6 @@ void refreshDisplay(bool forceRefresh) {
           }
 
           m5DialDisplay->resetLastEventTimer();
-          M5Dial.Speaker.tone(5000, 20);
 
           if (navigation_mode_.is_navigation_mode()) {
               // Exclusively handle navigation mode logic
