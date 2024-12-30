@@ -1,5 +1,4 @@
 #pragma once
-#include "M5DialDisplay.h"
 
 namespace esphome
 {
