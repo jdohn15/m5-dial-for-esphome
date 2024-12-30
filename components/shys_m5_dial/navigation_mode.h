@@ -34,20 +34,14 @@ public:
     bool is_navigation_refresh_disabled() const { return navigation_refresh_disabled_; }
 
     void handle_rotary_knob(const char* direction, int& currentDevice, M5DialDisplay& display, HaDevice** devices) {
+        bool forceRefresh = false;
+
         if (is_navigation_mode_) {
-            if (strcmp(direction, ROTARY_LEFT) == 0) {
-                // Simulate a touch swipe left
-                ESP_LOGI("NAVIGATION_MODE", "Simulating swipe left");
-                touchSwipe(TOUCH_SWIPE_LEFT);
-            } else if (strcmp(direction, ROTARY_RIGHT) == 0) {
-                // Simulate a touch swipe right
-                ESP_LOGI("NAVIGATION_MODE", "Simulating swipe right");
-                touchSwipe(TOUCH_SWIPE_RIGHT);
+
+            if (forceRefresh) {
+                update_display_for_selection(display, currentDevice, devices);
             }
-    
-            // Update the display for the current selection
-            update_display_for_selection(display, currentDevice, devices);
-    
+
             ESP_LOGI("NAVIGATION_MODE", "Current device index: %d", currentDevice);
         }
     }
