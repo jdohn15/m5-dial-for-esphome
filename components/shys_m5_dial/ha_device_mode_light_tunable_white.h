@@ -55,7 +55,7 @@ namespace esphome
 
                     uint16_t ypos = getDisplayPositionY(currentValue);
 
-                    gfx->setTextColor(MAROON);
+                    gfx->setTextColor(WHITE);
                     gfx->setTextDatum(middle_center);
 
                     gfx->startWrite();                      // Secure SPI bus
