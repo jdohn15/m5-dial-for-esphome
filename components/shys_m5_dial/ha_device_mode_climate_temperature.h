@@ -116,6 +116,33 @@ namespace esphome
                             ESP_LOGI("HA_API", "Got current temperature value %i from %s", int(val.value()), this->sensor_entity_id_.c_str());
                         }
                     });
+                
+                // Subscribe to the set temperature
+                std::string attrNameTemp = "temperature";
+                api::global_api_server->subscribe_home_assistant_state(
+                    this->device.getEntityId().c_str(),
+                    esphome::optional<std::string>(attrNameTemp),
+                    [this](const std::string &state)
+                    {
+                        auto val = parse_number<float>(state);
+            
+                        if (!val.has_value())
+                        {
+                            ESP_LOGD("HA_API", "No valid set temperature in %s for %s", state.c_str(), this->device.getEntityId().c_str());
+                        }
+                        else
+                        {
+                            int new_set_temp = int(val.value());
+                            if (this->getValue() != new_set_temp)
+                            {
+                                this->setReceivedValue(new_set_temp);
+                                ESP_LOGI("HA_API", "Updated set temperature to %i for %s", new_set_temp, this->device.getEntityId().c_str());
+            
+                                // Force display refresh for set temperature update
+                                this->refreshDisplay(*m5DialDisplay, true);
+                            }
+                        }
+                    });
             }
 
             bool onTouch(M5DialDisplay &display, uint16_t x, uint16_t y) override
