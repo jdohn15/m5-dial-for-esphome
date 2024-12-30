@@ -73,8 +73,8 @@ namespace esphome
                 this->maxValue = 80;
         
                 // Override default values for apiSendDelay and apiSendLock
-                this->apiSendDelay = 500; // Set a custom delay (example: 500ms)
-                this->apiSendLock = 1500; // Set a custom lock (example: 1500ms)
+                this->apiSendDelay = 15000; // Set a custom delay (example: 500ms)
+                this->apiSendLock = 15000; // Set a custom lock (example: 1500ms)
         
                 ESP_LOGI("HA_DEVICE_MODE", "Custom apiSendDelay set to %d", this->apiSendDelay);
                 ESP_LOGI("HA_DEVICE_MODE", "Custom apiSendLock set to %d", this->apiSendLock);
