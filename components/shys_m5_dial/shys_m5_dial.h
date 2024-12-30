@@ -329,21 +329,26 @@ namespace esphome {
 
       void turnRotaryLeft() {
           m5DialDisplay->resetLastEventTimer();
+      
           if (navigation_mode_.is_navigation_mode()) {
-              navigation_mode_.handle_rotary_knob(ROTARY_LEFT, currentDevice, *m5DialDisplay, devices);
+              ESP_LOGD("ROTARY", "Simulating swipe left in navigation mode");
+              touchSwipe(TOUCH_SWIPE_LEFT); // Simulate a swipe left
           } else {
-              devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_LEFT);
+              devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_LEFT); // Regular rotary function
           }
       }
       
       void turnRotaryRight() {
           m5DialDisplay->resetLastEventTimer();
+      
           if (navigation_mode_.is_navigation_mode()) {
-              navigation_mode_.handle_rotary_knob(ROTARY_RIGHT, currentDevice, *m5DialDisplay, devices);
+              ESP_LOGD("ROTARY", "Simulating swipe right in navigation mode");
+              touchSwipe(TOUCH_SWIPE_RIGHT); // Simulate a swipe right
           } else {
-              devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_RIGHT);
+              devices[currentDevice]->onRotary(*m5DialDisplay, ROTARY_RIGHT); // Regular rotary function
           }
       }
+
 
 
       void shortButtonPress() {
