@@ -361,7 +361,7 @@ namespace esphome {
           m5DialDisplay->resetLastEventTimer();
       
           if (navigation_mode_.is_navigation_mode()) {
-              navigation_mode_.exit_navigation_mode();
+              navigation_mode_.exit_navigation_mode(*m5DialDisplay, currentDevice, devices);
           } else {
               navigation_mode_.enter_navigation_mode(*m5DialDisplay, currentDevice, devices);
           }
