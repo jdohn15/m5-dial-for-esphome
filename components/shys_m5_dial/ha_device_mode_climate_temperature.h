@@ -79,7 +79,7 @@ namespace esphome
                 ESP_LOGD("DISPLAY", "Temperature-Modus");
             }
 
-            void registerHAListener() override
+            void registerHAListener(M5DialDisplay &display) override
             {
                 // Subscribe to HVAC mode updates
                 std::string attrNameState = "";
@@ -122,7 +122,7 @@ namespace esphome
                 api::global_api_server->subscribe_home_assistant_state(
                     this->device.getEntityId().c_str(),
                     esphome::optional<std::string>(attrNameTemp),
-                    [this](const std::string &state)
+                    [this, &display](const std::string &state)
                     {
                         auto val = parse_number<float>(state);
 
@@ -137,7 +137,7 @@ namespace esphome
                             ESP_LOGI("HA_API", "Got Temperature value %i for %s", int(val.value()), this->device.getEntityId().c_str());
 
                             // Trigger a display refresh
-                            this->refreshDisplay(*this->m5DialDisplay_, true);
+                            this->refreshDisplay(display, true);
                         }
                     });
             }
