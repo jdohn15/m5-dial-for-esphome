@@ -37,19 +37,6 @@ public:
         bool forceRefresh = false;
 
         if (is_navigation_mode_) {
-            if (strcmp(direction, ROTARY_LEFT) == 0) {
-                currentDevice--;
-                if (currentDevice < 0) {
-                    currentDevice = max_components_ - 1; // Wrap around
-                }
-                forceRefresh = true;
-            } else if (strcmp(direction, ROTARY_RIGHT) == 0) {
-                currentDevice++;
-                if (currentDevice >= max_components_) {
-                    currentDevice = 0; // Wrap around
-                }
-                forceRefresh = true;
-            }
 
             if (forceRefresh) {
                 update_display_for_selection(display, currentDevice, devices);
