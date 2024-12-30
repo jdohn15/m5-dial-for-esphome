@@ -79,7 +79,7 @@ namespace esphome
                 ESP_LOGD("DISPLAY", "Temperature-Modus");
             }
 
-            void registerHAListener(M5DialDisplay *display)
+            void registerHAListener() override
             {
                 // Subscribe to HVAC mode updates
                 std::string attrNameState = "";
@@ -92,46 +92,19 @@ namespace esphome
                         {
                             return;
                         }
-            
+
                         this->setHvacMode(state.c_str());
                         ESP_LOGI("HA_API", "Got Mode %s for %s", state.c_str(), this->device.getEntityId().c_str());
                     });
-            
-                // Subscribe to the set temperature
-                std::string attrNameTemp = "temperature";
-                api::global_api_server->subscribe_home_assistant_state(
-                    this->device.getEntityId().c_str(),
-                    esphome::optional<std::string>(attrNameTemp),
-                    [this, display](const std::string &state) // Capture 'display' explicitly
-                    {
-                        auto val = parse_number<float>(state);
-            
-                        if (!val.has_value())
-                        {
-                            ESP_LOGD("HA_API", "No valid set temperature in %s for %s", state.c_str(), this->device.getEntityId().c_str());
-                        }
-                        else
-                        {
-                            int new_set_temp = int(val.value());
-                            if (this->getValue() != new_set_temp)
-                            {
-                                this->setReceivedValue(new_set_temp);
-                                ESP_LOGI("HA_API", "Updated set temperature to %i for %s", new_set_temp, this->device.getEntityId().c_str());
-            
-                                // Force display refresh for set temperature update
-                                this->refreshDisplay(*display, true); // Use 'display' here
-                            }
-                        }
-                    });
-            
+
                 // Subscribe to the current temperature sensor
                 api::global_api_server->subscribe_home_assistant_state(
                     this->sensor_entity_id_,
                     esphome::optional<std::string>(),
-                    [this, display](const std::string &state) // Capture 'display' explicitly
+                    [this](const std::string &state)
                     {
                         auto val = parse_number<float>(state);
-            
+
                         if (!val.has_value())
                         {
                             this->current_temperature_ = 0; // Reset if no valid value
@@ -140,10 +113,31 @@ namespace esphome
                         else
                         {
                             this->current_temperature_ = int(val.value());
-                            ESP_LOGI("HA_API", "Got current temperature value %i from %s", this->current_temperature_, this->sensor_entity_id_.c_str());
-            
-                            // Refresh the display when current temperature changes
-                            this->refreshDisplay(*display, true); // Use 'display' here
+                            ESP_LOGI("HA_API", "Got current temperature value %i from %s", int(val.value()), this->sensor_entity_id_.c_str());
+                        }
+                    });
+
+                // Subscribe to the set temperature
+                std::string attrNameTemp = "temperature";
+                api::global_api_server->subscribe_home_assistant_state(
+                    this->device.getEntityId().c_str(),
+                    esphome::optional<std::string>(attrNameTemp),
+                    [this](const std::string &state)
+                    {
+                        auto val = parse_number<float>(state);
+
+                        if (!val.has_value())
+                        {
+                            this->setReceivedValue(0);
+                            ESP_LOGD("HA_API", "No Temperature value in %s for %s", state.c_str(), this->device.getEntityId().c_str());
+                        }
+                        else
+                        {
+                            this->setReceivedValue(int(val.value()));
+                            ESP_LOGI("HA_API", "Got Temperature value %i for %s", int(val.value()), this->device.getEntityId().c_str());
+
+                            // Trigger a display refresh
+                            this->refreshDisplay(*this->m5DialDisplay_, true);
                         }
                     });
             }
