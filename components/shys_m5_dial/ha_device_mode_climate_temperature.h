@@ -1,5 +1,10 @@
 #pragma once
 
+#include "esphome.h"
+#include "ha_api.h"
+#include "ha_device.h"
+#include "M5DialDisplay.h"
+
 namespace esphome
 {
     namespace shys_m5_dial
@@ -92,11 +97,11 @@ namespace esphome
                         {
                             return;
                         }
-            
+
                         this->setHvacMode(state.c_str());
                         ESP_LOGI("HA_API", "Got Mode %s for %s", state.c_str(), this->device.getEntityId().c_str());
                     });
-            
+
                 // Subscribe to the current temperature sensor
                 api::global_api_server->subscribe_home_assistant_state(
                     this->sensor_entity_id_,
@@ -104,7 +109,7 @@ namespace esphome
                     [this](const std::string &state)
                     {
                         auto val = parse_number<float>(state);
-            
+
                         if (!val.has_value())
                         {
                             this->current_temperature_ = 0; // Reset if no valid value
@@ -116,30 +121,7 @@ namespace esphome
                             ESP_LOGI("HA_API", "Got current temperature value %i from %s", int(val.value()), this->sensor_entity_id_.c_str());
                         }
                     });
-            
-                // Fetch initial state for current temperature sensor
-                std::string initial_value;
-                if (api::global_api_server->get_home_assistant_state(this->sensor_entity_id_, initial_value)
-                {
-                    auto val = parse_number<float>(initial_value);
-            
-                    if (!val.has_value())
-                    {
-                        this->current_temperature_ = 0; // Reset if no valid value
-                        ESP_LOGD("HA_API", "No valid initial temperature value in %s", this->sensor_entity_id_.c_str());
-                    }
-                    else
-                    {
-                        this->current_temperature_ = int(val.value());
-                        ESP_LOGI("HA_API", "Got initial temperature value %i from %s", int(val.value()), this->sensor_entity_id_.c_str());
-                    }
-                }
-                else
-                {
-                    ESP_LOGW("HA_API", "Failed to fetch initial state for %s", this->sensor_entity_id_.c_str());
-                }
             }
-
 
             bool onTouch(M5DialDisplay &display, uint16_t x, uint16_t y) override
             {
