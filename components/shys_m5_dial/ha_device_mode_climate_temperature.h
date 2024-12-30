@@ -126,7 +126,7 @@ namespace esphome
             
                 // Subscribe to the current temperature sensor
                 api::global_api_server->subscribe_home_assistant_state(
-                    this->climate.dining_room_2,
+                    this->sensor_entity_id_,
                     esphome::optional<std::string>(),
                     [this, display](const std::string &state) // Capture 'display' explicitly
                     {
