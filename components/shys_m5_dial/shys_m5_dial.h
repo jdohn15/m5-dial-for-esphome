@@ -363,7 +363,7 @@ namespace esphome {
       }
 
       void longButtonPress() {
-          M5Dial.Speaker.mute();
+          M5Dial.Speaker.tone(0, 0);
           m5DialDisplay->resetLastEventTimer();
       
           if (navigation_mode_.is_navigation_mode()) {
