@@ -365,9 +365,8 @@ namespace esphome {
           } else {
               navigation_mode_.enter_navigation_mode(*m5DialDisplay, currentDevice, devices);
           }
-      
-          refreshDisplay(true);
       }
+
 
 
 
