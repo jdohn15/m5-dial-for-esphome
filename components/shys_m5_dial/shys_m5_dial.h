@@ -384,24 +384,30 @@ namespace esphome {
           }
       }
 
-      void touchSwipe(const char* direction){
-        ESP_LOGD("TOUCH", "touchSwipe direction: %s", direction);
-        m5DialDisplay->resetLastEventTimer();
-        if(m5DialDisplay->isDisplayOn()){
-          if(! devices[currentDevice]->onSwipe(*m5DialDisplay, direction) ){
-
-            if(strcmp(direction, TOUCH_SWIPE_LEFT)==0){
-              this->previousDevice();
-            } else if(strcmp(direction, TOUCH_SWIPE_RIGHT)==0){
-              this->nextDevice();
-            } else if(strcmp(direction, TOUCH_SWIPE_UP)==0){
-              devices[currentDevice]->previousMode();
-            } else if(strcmp(direction, TOUCH_SWIPE_DOWN)==0){
-              devices[currentDevice]->nextMode();
-            } 
-          refreshDisplay(true);
+      void touchSwipe(const char* direction) {
+          ESP_LOGD("TOUCH", "touchSwipe direction: %s", direction);
+          m5DialDisplay->resetLastEventTimer();
+      
+          if (m5DialDisplay->isDisplayOn()) {
+              if (!devices[currentDevice]->onSwipe(*m5DialDisplay, direction)) {
+                  if (strcmp(direction, TOUCH_SWIPE_LEFT) == 0) {
+                      this->previousDevice();
+                  } else if (strcmp(direction, TOUCH_SWIPE_RIGHT) == 0) {
+                      this->nextDevice();
+                  } else if (strcmp(direction, TOUCH_SWIPE_UP) == 0) {
+                      devices[currentDevice]->previousMode();
+                  } else if (strcmp(direction, TOUCH_SWIPE_DOWN) == 0) {
+                      devices[currentDevice]->nextMode();
+                  }
+              }
+              // Refresh the navigation overlay if in navigation mode
+              if (navigation_mode_.is_navigation_mode()) {
+                  navigation_mode_.update_display_for_selection(*m5DialDisplay, currentDevice, devices);
+              } else {
+                  // Refresh the regular display if not in navigation mode
+                  refreshDisplay(true);
+              }
           }
-        }
       }
 
 
