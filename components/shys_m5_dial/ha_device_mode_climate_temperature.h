@@ -119,7 +119,7 @@ namespace esphome
             
                 // Fetch initial state for current temperature sensor
                 std::string initial_value;
-                if (api::global_api_server->get_home_assistant_state(this->sensor_entity_id_, initial_value))
+                if (api::global_api_server->get_home_assistant_state(this->sensor_entity_id_, initial_value)
                 {
                     auto val = parse_number<float>(initial_value);
             
