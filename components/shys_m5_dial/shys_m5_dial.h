@@ -347,14 +347,14 @@ namespace esphome {
 
 
       void shortButtonPress() {
-        m5DialDisplay->resetLastEventTimer();
-        M5Dial.Speaker.tone(4000, 20);
-
-        if (navigation_mode_.is_navigation_mode()) {
-          navigation_mode_.exit_navigation_mode();
-        } else if (m5DialDisplay->isDisplayOn()) {
-          devices[currentDevice]->onButton(*m5DialDisplay, BUTTON_SHORT);
-        }
+          m5DialDisplay->resetLastEventTimer();
+          M5Dial.Speaker.tone(4000, 20);
+      
+          if (navigation_mode_.is_navigation_mode()) {
+              navigation_mode_.exit_navigation_mode(*m5DialDisplay, currentDevice, devices);
+          } else if (m5DialDisplay->isDisplayOn()) {
+              devices[currentDevice]->onButton(*m5DialDisplay, BUTTON_SHORT);
+          }
       }
 
       void longButtonPress() {
