@@ -1,10 +1,5 @@
 #pragma once
 
-#include "esphome.h"
-#include "ha_api.h"
-#include "ha_device.h"
-#include "M5DialDisplay.h"
-
 namespace esphome
 {
     namespace shys_m5_dial
