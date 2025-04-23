@@ -160,7 +160,15 @@ namespace esphome
             {
                 if (strcmp(clickType, BUTTON_SHORT) == 0)
                 {
-                    haApi.turnClimateOn(this->device.getEntityId(), "cool");
+                    if (strcmp(this->getHvacMode().c_str(), "off") == 0)
+                    {
+                        haApi.turnClimateOn(this->device.getEntityId(), "heat");
+                    }
+                    else
+                    {
+                        haApi.turnClimateOff(this->device.getEntityId());
+                    }
+
                     return true;
                 }
                 return false;
